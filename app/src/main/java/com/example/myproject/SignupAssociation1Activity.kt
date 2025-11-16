@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import android.util.Patterns // Import nécessaire pour la validation d'email
+import android.util.Patterns
 import androidx.appcompat.app.AppCompatActivity
 
 class SignupAssociation1Activity : AppCompatActivity() {
@@ -21,7 +21,7 @@ class SignupAssociation1Activity : AppCompatActivity() {
         // 1. Initialisation des vues
         inputFullName = findViewById(R.id.input_full_name)
         inputEmail = findViewById(R.id.input_email)
-        inputContact = findViewById(R.id.input_contact) // Référence au champ de contact
+        inputContact = findViewById(R.id.input_contact)
         val nextButton: Button = findViewById(R.id.btn_next)
         val previousButton: Button = findViewById(R.id.btn_previous)
 
@@ -52,7 +52,7 @@ class SignupAssociation1Activity : AppCompatActivity() {
 
         // 1. Validation du Nom Complet
         if (fullName.isEmpty()) {
-            inputFullName.error = "Le nom complet est requis."
+            inputFullName.error = "Le nom complet de l'association est requis."
             isValid = false
         } else {
             inputFullName.error = null
@@ -69,16 +69,22 @@ class SignupAssociation1Activity : AppCompatActivity() {
             inputEmail.error = null
         }
 
-        // Note: Le champ Contact Number n'a pas été rendu obligatoire ici.
-
         return isValid
     }
 
     /**
-     * Lance l'activité pour la deuxième étape de l'inscription.
+     * Lance l'activité pour la deuxième étape de l'inscription et passe les données.
      */
     private fun navigateToNextStep() {
-        val intent = Intent(this, SignupAssociation2Activity::class.java)
+        val fullName = inputFullName.text.toString().trim()
+        val email = inputEmail.text.toString().trim()
+        val contact = inputContact.text.toString().trim()
+
+        val intent = Intent(this, SignupAssociation2Activity::class.java).apply {
+            putExtra("fullName", fullName)
+            putExtra("email", email)
+            putExtra("contact", contact)
+        }
         startActivity(intent)
     }
 }

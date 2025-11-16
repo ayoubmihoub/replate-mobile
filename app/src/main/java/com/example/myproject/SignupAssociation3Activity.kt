@@ -17,10 +17,14 @@ class SignupAssociation3Activity : AppCompatActivity() {
     private lateinit var passwordInput: EditText
     private lateinit var confirmPasswordInput: EditText
     private lateinit var termsCheckbox: CheckBox
+    private lateinit var incomingIntent: Intent // Pour stocker l'Intent de l'activité précédente
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_association3)
+
+        // Récupérer l'Intent contenant toutes les données précédentes
+        incomingIntent = intent
 
         // 1. Trouver les vues
         passwordInput = findViewById(R.id.input_password)
@@ -45,7 +49,7 @@ class SignupAssociation3Activity : AppCompatActivity() {
      */
     private fun onCreateAccountClicked() {
         if (isFormValid()) {
-            // Si la validation réussit, naviguer vers l'activité finale
+            // Si la validation réussit, naviguer vers l'activité finale en passant TOUTES les données
             navigateToFinSignupActivity()
         } else {
             Toast.makeText(this, "Veuillez vérifier les erreurs de mot de passe et accepter les conditions.", Toast.LENGTH_LONG).show()
@@ -95,12 +99,29 @@ class SignupAssociation3Activity : AppCompatActivity() {
     // ------------------------------------------------
 
     /**
-     * Lance l'activité de fin d'inscription (FinSignupActivity).
+     * Lance l'activité de fin d'inscription (FinSignupAssociationActivity) et passe toutes les données.
+     * Note: On change la destination pour FinSignupAssociationActivity.
      */
     private fun navigateToFinSignupActivity() {
-        val intent = Intent(this, FinSignupActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val password = passwordInput.text.toString().trim()
+
+        val intent = Intent(this, FinSignupAssociationActivity::class.java).apply {
+            // Données de l'activité 1 (Nom, Email, Contact)
+            putExtra("fullName", incomingIntent.getStringExtra("fullName"))
+            putExtra("email", incomingIntent.getStringExtra("email"))
+            putExtra("contact", incomingIntent.getStringExtra("contact"))
+
+            // Données de l'activité 2 (Location, URIs de fichiers)
+            putExtra("location", incomingIntent.getStringExtra("location"))
+            putExtra("profilePictureUri", incomingIntent.getStringExtra("profilePictureUri"))
+            putExtra("documentUri", incomingIntent.getStringExtra("documentUri")) // Document de vérification (Requis)
+
+            // Nouvelle donnée de l'activité 3 (Mot de passe)
+            putExtra("password", password)
+        }
+
+        // Démarrer l'activité finale
         startActivity(intent)
-        finish()
+        // Note: L'activité finale gère la fermeture de la pile d'activités
     }
 }

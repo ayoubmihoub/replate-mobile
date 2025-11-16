@@ -13,6 +13,11 @@ import android.view.View
 
 class SignupAssociation2Activity : AppCompatActivity() {
 
+    // Variables pour stocker les URIs sélectionnées
+    private var profilePictureUri: Uri? = null
+    private var verificationDocumentUri: Uri? = null
+    private lateinit var incomingIntent: Intent
+
     // Déclaration des champs de saisie de cette page
     private lateinit var inputLocation: EditText
     private lateinit var inputProfilePicture: EditText
@@ -27,6 +32,7 @@ class SignupAssociation2Activity : AppCompatActivity() {
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
+            profilePictureUri = uri // Stockage de l'URI
             val fileName = getFileName(uri)
             inputProfilePicture.setText(fileName)
             Toast.makeText(this, "Photo sélectionnée: $fileName", Toast.LENGTH_LONG).show()
@@ -40,6 +46,7 @@ class SignupAssociation2Activity : AppCompatActivity() {
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
+            verificationDocumentUri = uri // Stockage de l'URI
             val fileName = getFileName(uri)
             inputVerificationDocument.setText(fileName)
             Toast.makeText(this, "Document sélectionné: $fileName", Toast.LENGTH_LONG).show()
@@ -53,6 +60,9 @@ class SignupAssociation2Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_association2) // Charge le layout de l'étape 2
 
+        // Récupérer les données de l'activité précédente
+        incomingIntent = intent
+
         // 1. Initialisation des vues
         inputLocation = findViewById(R.id.input_location)
         inputProfilePicture = findViewById(R.id.input_profile_picture)
@@ -61,13 +71,9 @@ class SignupAssociation2Activity : AppCompatActivity() {
         previousButton = findViewById(R.id.btn_previous)
 
         // 2. --- GESTION DU CLIC POUR L'UPLOAD DES FICHIERS ---
-
-        // Clic sur le champ Photo de Profil (La fonctionnalité d'upload reste)
         inputProfilePicture.setOnClickListener {
             selectPictureLauncher.launch("image/*")
         }
-
-        // Clic sur le champ Document de Vérification
         inputVerificationDocument.setOnClickListener {
             selectDocumentLauncher.launch("*/*")
         }
@@ -75,28 +81,27 @@ class SignupAssociation2Activity : AppCompatActivity() {
         // 3. --- GESTION DU CLIC "NEXT" ---
         nextButton.setOnClickListener {
             if (validateInputs()) {
-                // Si la validation réussit, naviguer vers l'étape 3
+                // Si la validation réussit, naviguer vers l'étape 3 en passant TOUTES les données
                 navigateToNextStep()
             } else {
-                Toast.makeText(this, "Veuillez remplir tous les champs requis.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Veuillez remplir le champ d'adresse et fournir le document de vérification.", Toast.LENGTH_SHORT).show()
             }
         }
 
         // 4. --- GESTION DU CLIC "PREVIOUS" ---
         previousButton.setOnClickListener {
-            // Revenir à SignupAssociation1Activity
             finish()
         }
     }
 
     /**
      * Valide que les champs nécessaires pour l'étape 2 sont remplis.
-     * La photo de profil est maintenant considérée comme non requise.
+     * La photo de profil est non requise. L'adresse et le document sont requis.
      */
     private fun validateInputs(): Boolean {
         var isValid = true
 
-        // 1. Validation de l'Adresse/Location
+        // 1. Validation de l'Adresse/Location (Requis)
         if (inputLocation.text.toString().trim().isEmpty()) {
             inputLocation.error = "L'adresse est requise."
             isValid = false
@@ -104,23 +109,14 @@ class SignupAssociation2Activity : AppCompatActivity() {
             inputLocation.error = null
         }
 
-        // 2. Validation de la Photo de Profil (SUPPRIMÉE pour la rendre NON requise)
-        /*
-        if (inputProfilePicture.text.toString().trim().isEmpty()) {
-            inputProfilePicture.error = "La photo de profil est requise."
-            isValid = false
-        } else {
-            inputProfilePicture.error = null
-        }
-        */
-
-        // 3. Validation du Document de Vérification (RESTE OBLIGATOIRE)
-        if (inputVerificationDocument.text.toString().trim().isEmpty()) {
+        // 2. Validation du Document de Vérification (Requis pour une Association)
+        if (verificationDocumentUri == null) {
             inputVerificationDocument.error = "Le document de vérification est requis."
             isValid = false
         } else {
             inputVerificationDocument.error = null
         }
+        // Note: inputProfilePicture est facultatif
 
         return isValid
     }
@@ -129,7 +125,17 @@ class SignupAssociation2Activity : AppCompatActivity() {
      * Lance l'activité pour la troisième et dernière étape de l'inscription (SignupAssociation3Activity).
      */
     private fun navigateToNextStep() {
-        val intent = Intent(this, SignupAssociation3Activity::class.java)
+        val intent = Intent(this, SignupAssociation3Activity::class.java).apply {
+            // Données de l'activité 1
+            putExtra("fullName", incomingIntent.getStringExtra("fullName"))
+            putExtra("email", incomingIntent.getStringExtra("email"))
+            putExtra("contact", incomingIntent.getStringExtra("contact"))
+
+            // Nouvelles données de l'activité 2
+            putExtra("location", inputLocation.text.toString().trim())
+            putExtra("profilePictureUri", profilePictureUri?.toString()) // Peut être null
+            putExtra("documentUri", verificationDocumentUri?.toString()) // Requis ici, mais passé comme string
+        }
         startActivity(intent)
     }
 

@@ -5,17 +5,19 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import android.widget.CheckBox // Import de CheckBox
+import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
 
 class SignupMerchant3Activity : AppCompatActivity() {
 
+    private lateinit var incomingIntent: Intent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // ATTENTION : Le XML fourni est pour SignupAssociation3Activity,
-        // mais le Kotlin est SignupMerchant3Activity. Nous supposons que les IDs sont les mêmes.
         setContentView(R.layout.signup_merchant3)
+
+        // Récupérer les données de l'activité précédente
+        incomingIntent = intent
 
         val createAccountButton: Button = findViewById(R.id.btn_create_account)
         val previousButton: Button = findViewById(R.id.btn_previous)
@@ -26,7 +28,6 @@ class SignupMerchant3Activity : AppCompatActivity() {
                 // Si la validation réussit, naviguer vers l'activité finale
                 navigateToFinSignupActivity()
             } else {
-                // Le message d'erreur sera désormais plus précis grâce aux erreurs individuelles des EditText
                 Toast.makeText(this, "Veuillez vérifier les erreurs et accepter les conditions.", Toast.LENGTH_LONG).show()
             }
         }
@@ -50,7 +51,6 @@ class SignupMerchant3Activity : AppCompatActivity() {
         val password = passwordInput.text.toString()
         val confirmPassword = confirmPasswordInput.text.toString()
 
-        // --- Constante de longueur minimale ---
         val MIN_PASSWORD_LENGTH = 6
 
         // 1. Validation du mot de passe
@@ -85,12 +85,24 @@ class SignupMerchant3Activity : AppCompatActivity() {
     }
 
     /**
-     * Lance l'activité de fin d'inscription.
+     * Lance l'activité de fin d'inscription, en passant toutes les données accumulées.
      */
     private fun navigateToFinSignupActivity() {
-        val intent = Intent(this, FinSignupActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val password = findViewById<EditText>(R.id.input_password).text.toString()
+
+        val intent = Intent(this, FinSignupMerchantActivity::class.java).apply {
+            // Données de l'activité 1 (Nom, Email, Contact)
+            putExtra("fullName", incomingIntent.getStringExtra("fullName"))
+            putExtra("email", incomingIntent.getStringExtra("email"))
+            putExtra("contact", incomingIntent.getStringExtra("contact"))
+
+            // Données de l'activité 2 (URIs)
+            putExtra("documentUri", incomingIntent.getStringExtra("documentUri"))
+            putExtra("profilePictureUri", incomingIntent.getStringExtra("profilePictureUri"))
+
+            // Nouvelle donnée de l'activité 3 (Mot de passe)
+            putExtra("password", password)
+        }
         startActivity(intent)
-        finish()
     }
 }
