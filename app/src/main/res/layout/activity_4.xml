@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="24dp"
+    tools:context=".Activity4">
+
+    <View
+        android:id="@+id/logo_placeholder"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="32dp"
+        android:background="#E0E0E0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Replate"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/logo_placeholder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <include
+        android:id="@+id/stepper_include"
+        layout="@layout/stepper_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/app_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/selection_buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/stepper_include"
+        android:weightSum="3">
+
+        <Button
+            android:id="@+id/btn_individual"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Individual"
+            android:textColor="@android:color/black"
+            android:backgroundTint="#FFC107"
+            android:textStyle="bold"
+            android:drawableStart="@drawable/individual" android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:layout_marginEnd="6dp"
+            app:cornerRadius="8dp" /> <Button
+        android:id="@+id/btn_merchant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Merchant"
+        android:textColor="#808080"
+        android:backgroundTint="#F5F5F5"
+         android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="6dp"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        app:cornerRadius="8dp" />
+
+        <Button
+            android:id="@+id/btn_association"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Association"
+            android:textColor="#808080"
+            android:backgroundTint="#F5F5F5"
+            android:drawableStart="@drawable/association"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:layout_marginStart="6dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/label_full_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Full Name"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/selection_buttons_layout"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/input_full_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_input_background"
+        android:hint="Enter your full name"
+        android:textColorHint="#A9A9A9"
+        android:paddingStart="16dp"
+        android:drawableStart="@drawable/fuul_name_placeholder"
+        android:drawablePadding="10dp"
+        android:inputType="textPersonName"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/label_full_name" />
+
+    <TextView
+        android:id="@+id/label_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/input_full_name"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/input_email"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_input_background"
+        android:hint="Enter your email"
+        android:textColorHint="#A9A9A9"
+        android:paddingStart="16dp"
+        android:drawableStart="@drawable/sms"
+        android:drawablePadding="10dp"
+        android:inputType="textEmailAddress"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/label_email" />
+
+    <TextView
+        android:id="@+id/label_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contact number"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/input_email"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/input_contact"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_input_background"
+        android:text="(+216) 24785682"
+        android:paddingStart="16dp"
+        android:drawableStart="@drawable/tn"
+        android:drawablePadding="10dp"
+        android:inputType="phone"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/label_contact" />
+
+    <LinearLayout
+        android:id="@+id/navigation_buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/input_contact"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/btn_previous"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Previous"
+            android:textColor="#FF8C00"
+            android:backgroundTint="#FBE5D6"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp"
+            app:cornerRadius="8dp" />
+
+        <Button
+            android:id="@+id/btn_next_form"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Next"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#FF8C00"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/navigation_buttons_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already have an account? "
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/text_login_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textColor="#FF8C00"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

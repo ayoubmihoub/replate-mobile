@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/dashboard"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_analytics"
+            android:icon="@drawable/global_search"
+            android:title="Analytics" />
+        <item
+            android:id="@+id/nav_users"
+            android:icon="@drawable/users"
+            android:title="Users" />
+        <item
+            android:id="@+id/nav_associations"
+            android:icon="@drawable/partner"
+            android:title="Associations" />
+        <item
+            android:id="@+id/nav_donations"
+            android:icon="@drawable/total"
+            android:title="Donations" />
+        <item
+            android:id="@+id/nav_reports"
+            android:icon="@drawable/reports"
+            android:title="Reports" />
+        <item
+            android:id="@+id/nav_tickets"
+            android:icon="@drawable/note"
+            android:title="Tickets" />
+    </group>
+
+    <item android:title="Settings &amp; Logout">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/settings"
+                android:title="Settings" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/param"
+                android:title="Logout" />
+        </menu>
+    </item>
+</menu>

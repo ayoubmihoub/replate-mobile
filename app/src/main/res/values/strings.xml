@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyProject</string>
+    <string name="navigation_drawer_open">Ouvrir le panneau de navigation</string>
+    <string name="navigation_drawer_close">Fermer le panneau de navigation</string>
+</resources>

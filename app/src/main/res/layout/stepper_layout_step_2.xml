@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <TextView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/stepper_active_circle"
+        android:text="✔"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_weight="1"
+        android:background="#FFC107" />
+
+    <TextView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/stepper_active_circle"
+        android:text="2"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_weight="1"
+        android:background="#E0E0E0" />
+
+    <TextView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/stepper_inactive_circle"
+        android:text="3"
+        android:textColor="#808080"
+        android:gravity="center"
+        android:textStyle="bold" />
+
+</LinearLayout>

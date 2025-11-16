@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".SignupAssociation2Activity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+
+                android:background="#DCDCDC"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="Replate Logo"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Replate"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="32dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="32dp">
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:background="#FFC107"/> <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="1"
+                android:gravity="center"
+                android:background="@drawable/rounded_step_active_bg"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:background="#FFC107"/> <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="2"
+                android:gravity="center"
+                android:background="@drawable/rounded_step_active_bg"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:background="#E0E0E0"/>
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="3"
+                    android:gravity="center"
+                    android:background="@drawable/rounded_step_inactive_bg"
+                    android:textColor="#808080"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"  android:background="@drawable/rounded_toggle_group_bg"
+                android:layout_marginBottom="32dp"
+                android:padding="4dp"> <Button
+                android:id="@+id/btn_individual"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Individual"
+                android:textColor="@android:color/black"
+                android:backgroundTint="#F5F5F5"
+                app:cornerRadius="12dp"
+                android:minHeight="50dp"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
+                android:layout_marginEnd="4dp"/> <Button
+                android:id="@+id/btn_merchant"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Merchant"
+                android:textColor="@android:color/black"
+                android:backgroundTint="#F5F5F5"
+                app:cornerRadius="12dp"
+                android:minHeight="50dp"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"/>
+
+                <Button
+                    android:id="@+id/btn_association"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Association"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="#FFC107"
+                    app:cornerRadius="12dp"
+                    android:minHeight="50dp"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
+                    android:layout_marginStart="4dp"/> </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Location"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/input_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:hint="Enter your city or address"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:textColorHint="#A9A9A9"
+                android:drawableStart="@drawable/location"
+
+                android:drawablePadding="10dp"
+                android:layout_marginBottom="24dp"
+                android:inputType="textPostalAddress"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profile Picture"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/input_profile_picture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp"
+                android:background="@drawable/rounded_edittext_bg"
+                android:hint="Upload a profile picture"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:textColorHint="#A9A9A9"
+                android:drawableStart="@drawable/fuul_name_placeholder"
+                android:drawableEnd="@drawable/pic_link"
+                android:drawablePadding="10dp"
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Verification Document"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/input_verification_document"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp"
+                android:background="@drawable/rounded_input_background"
+                android:hint="Choose a Doc"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:textColorHint="#A9A9A9"
+                android:drawableEnd="@drawable/pic_link"
+                android:drawablePadding="10dp"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_marginBottom="32dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btn_previous"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Previous"
+                    android:textColor="#FF4500"
+                    android:backgroundTint="#FFEEE8"
+                    app:cornerRadius="12dp"
+                    android:minHeight="50dp"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btn_next"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Next"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="#FF4500"
+                    app:cornerRadius="12dp"
+                    android:minHeight="50dp"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

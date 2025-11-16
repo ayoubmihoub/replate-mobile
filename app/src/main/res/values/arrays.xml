@@ -1,0 +1,17 @@
+<resources>
+    <string-array name="food_categories">
+        <item>Baked Food</item>
+        <item>Vegetables</item>
+        <item>Fruits</item>
+        <item>Dairy</item>
+        <item>Meat</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="weight_units">
+        <item>Kg</item>
+        <item>g</item>
+        <item>L</item>
+        <item>ml</item>
+        <item>pcs</item>
+    </string-array>
+</resources>
