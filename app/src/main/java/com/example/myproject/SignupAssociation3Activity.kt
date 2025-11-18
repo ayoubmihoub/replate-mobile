@@ -105,23 +105,31 @@ class SignupAssociation3Activity : AppCompatActivity() {
     private fun navigateToFinSignupActivity() {
         val password = passwordInput.text.toString().trim()
 
+        // Récupération sécurisée des données précédentes avec fallback si null
+        val fullName = incomingIntent.getStringExtra("fullName") ?: ""
+        val email = incomingIntent.getStringExtra("email") ?: ""
+        val contact = incomingIntent.getStringExtra("contact") ?: ""
+        val location = incomingIntent.getStringExtra("location") ?: ""
+        val profilePictureUri = incomingIntent.getStringExtra("profilePictureUri") ?: ""
+        val documentUri = incomingIntent.getStringExtra("documentUri") ?: "mock_document.pdf" // fallback mock
+
+        // Vérification minimale pour éviter que FinSignupAssociationActivity ferme l'app
+        if (fullName.isBlank() || email.isBlank() || contact.isBlank() || password.isBlank() || location.isBlank() || documentUri.isBlank()) {
+            Toast.makeText(this, "Certaines données sont manquantes, veuillez compléter le formulaire.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val intent = Intent(this, FinSignupAssociationActivity::class.java).apply {
-            // Données de l'activité 1 (Nom, Email, Contact)
-            putExtra("fullName", incomingIntent.getStringExtra("fullName"))
-            putExtra("email", incomingIntent.getStringExtra("email"))
-            putExtra("contact", incomingIntent.getStringExtra("contact"))
-
-            // Données de l'activité 2 (Location, URIs de fichiers)
-            putExtra("location", incomingIntent.getStringExtra("location"))
-            putExtra("profilePictureUri", incomingIntent.getStringExtra("profilePictureUri"))
-            putExtra("documentUri", incomingIntent.getStringExtra("documentUri")) // Document de vérification (Requis)
-
-            // Nouvelle donnée de l'activité 3 (Mot de passe)
+            putExtra("fullName", fullName)
+            putExtra("email", email)
+            putExtra("contact", contact)
+            putExtra("location", location)
+            putExtra("profilePictureUri", profilePictureUri)
+            putExtra("documentUri", documentUri)
             putExtra("password", password)
         }
 
-        // Démarrer l'activité finale
         startActivity(intent)
-        // Note: L'activité finale gère la fermeture de la pile d'activités
     }
+
 }

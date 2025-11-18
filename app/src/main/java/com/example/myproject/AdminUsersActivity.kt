@@ -1,67 +1,80 @@
-package com.example.myproject // IMPORTANT: Remplacez par votre nom de package réel
+package com.example.myproject
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myproject.ui.adapter.UserAdapter
+import com.example.myproject.ui.admin.PendingAccountsViewModel
+import android.content.Intent
+import com.example.myproject.ui.admin.PendingAccountsViewModelFactory // IMPORT MANQUANT AJOUTÉ ICI
 
 class AdminUsersActivity : AppCompatActivity() {
 
+    private val TAG = "AdminUsersActivity"
+
     private lateinit var recyclerView: RecyclerView
-    private lateinit var userAdapter: UserAdapter // Nous allons créer cet adaptateur plus tard
+    private lateinit var userAdapter: UserAdapter
+    private lateinit var viewModel: PendingAccountsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_admin_users) // Nouveau layout à créer
+        setContentView(R.layout.activity_admin_users)
 
-        // Gérer le bouton Retour dans l'en-tête
-        findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
+        val sharedPref = getSharedPreferences("my_app_prefs", Context.MODE_PRIVATE)
+        val userToken = sharedPref.getString("TOKEN", "") ?: ""
+
+        if (userToken.isEmpty()) {
+            Toast.makeText(this, "Session expirée, reconnectez-vous.", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
+            return
         }
+
+        // Assure que le token a le préfixe 'Bearer ' pour l'envoi API
+        val token = if (!userToken.startsWith("Bearer ")) "Bearer $userToken" else userToken
+        Log.d(TAG, "Token JWT: $token")
+
+        // ----------------------------------------------------
+        // CORRECTION : Initialisation du ViewModel avec la Factory
+        // ----------------------------------------------------
+        val factory = PendingAccountsViewModelFactory(token)
+        viewModel = ViewModelProvider(this, factory).get(PendingAccountsViewModel::class.java)
+
+        findViewById<ImageButton>(R.id.btn_back).setOnClickListener { finish() }
 
         recyclerView = findViewById(R.id.recycler_view_users)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // 1. Charger les données (Simulées ici)
-        val userList = getMockUserList()
-
-        // 2. Initialiser et définir l'adaptateur
-        userAdapter = UserAdapter(userList) { userId, action ->
-            // Logique de clic sur Approve/Refuse
-            handleUserAction(userId, action)
-        }
+        // La liste initiale de l'adapter doit être vide
+        userAdapter = UserAdapter(emptyList()) { userId, action -> handleUserAction(userId, action) }
         recyclerView.adapter = userAdapter
+
+        // Configuration des observateurs après l'initialisation du ViewModel
+        viewModel.pendingUsers.observe(this) {
+            // Mise à jour de la liste
+            userAdapter.updateList(it)
+        }
+        viewModel.statusMessage.observe(this) {
+            if (it.isNotEmpty()) Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+
+        // ----------------------------------------------------
+        // DÉCLENCHEMENT DE L'APPEL API
+        // ----------------------------------------------------
+        viewModel.fetchPendingAccounts()
     }
 
-    // Fonction de simulation de données
-    private fun getMockUserList(): List<User> {
-        return listOf(
-            User(1, "Alice Dupont", "alice.dupont@mail.com", "User", "pending"),
-            User(2, "Bob Martin", "bob.martin@mail.com", "Association", "pending"),
-            User(3, "Charlie Leblanc", "charlie@mail.com", "User", "approved"),
-            User(4, "Replate NGO", "ngo@replate.org", "Association", "refused")
-        )
-    }
-
-    /**
-     * Gère les clics sur les boutons Approve et Refuse.
-     */
-    private fun handleUserAction(userId: Int, action: String) {
-        // Envoi de la requête au serveur pour mettre à jour le statut
-        Toast.makeText(this, "Action '$action' effectuée pour l'utilisateur ID: $userId", Toast.LENGTH_SHORT).show()
-
-        // Mettre à jour la liste après l'action (en environnement réel, vous rechargeriez les données)
-        // userAdapter.updateStatus(userId, action)
+    private fun handleUserAction(userId: Long, action: String) {
+        when (action.lowercase()) {
+            "approve" -> viewModel.validateAccount(userId)
+            "refuse" -> viewModel.refuseAccount(userId)
+            else -> Toast.makeText(this, "Action inconnue", Toast.LENGTH_SHORT).show()
+        }
     }
 }
-
-// Classe de données pour l'utilisateur
-data class User(
-    val id: Int,
-    val username: String,
-    val email: String,
-    val role: String,
-    var status: String // pending, approved, refused
-)

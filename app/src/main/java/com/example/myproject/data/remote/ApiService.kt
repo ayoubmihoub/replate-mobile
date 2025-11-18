@@ -21,10 +21,14 @@ interface ApiService {
     fun register(@Body request: RegisterRequest): Call<MessageResponse>
 
     // ADMIN — validate account
-    @POST("admin/validate/{id}")
-    fun validateAccount(@Path("id") id: Long): Call<String>
-
-    // ADMIN — get pending accounts
     @GET("admin/pending")
-    fun getPendingAccounts(): Call<List<User>>
+    fun getPendingAccounts(
+        @Header("Authorization") token: String
+    ): Call<List<User>>
+
+    @POST("admin/validate/{id}")
+    fun validateAccount(
+        @Path("id") userId: Long,
+        @Header("Authorization") token: String
+    ): Call<MessageResponse>
 }

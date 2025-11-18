@@ -6,8 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5"
-    tools:context=".HomeActivity">
+    tools:context=".HomePage">
 
+    <!-- Scrollable content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -20,6 +21,7 @@
             android:orientation="vertical"
             android:paddingBottom="16dp">
 
+            <!-- Top header: logout, profile, location, menu -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -28,14 +30,30 @@
                 android:paddingTop="24dp"
                 android:paddingBottom="16dp">
 
+                <!-- Logout button -->
+                <ImageButton
+                    android:id="@+id/btn_logout"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/settings"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Logout"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:padding="8dp"/>
+
+                <!-- Profile placeholder -->
                 <View
                     android:id="@+id/profile_placeholder"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/profile"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/btn_logout"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!-- Location info -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -63,6 +81,7 @@
                         android:drawablePadding="4dp" />
                 </LinearLayout>
 
+                <!-- Menu button -->
                 <ImageButton
                     android:id="@+id/btn_menu"
                     android:layout_width="40dp"
@@ -70,13 +89,15 @@
                     android:backgroundTint="@color/white"
                     android:src="@drawable/hum"
                     android:padding="8dp"
-                    app:cornerRadius="16dp"  app:layout_constraintEnd_toEndOf="parent"
+                    app:cornerRadius="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:scaleType="fitCenter"
                     android:contentDescription="Menu" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Search bar -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,7 +109,6 @@
                     android:id="@+id/input_search"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
-
                     android:hint="Search ..."
                     android:textColorHint="#A9A9A9"
                     android:paddingStart="16dp"
@@ -110,8 +130,10 @@
                     app:layout_constraintEnd_toEndOf="@id/input_search"
                     app:layout_constraintTop_toTopOf="@id/input_search"
                     app:layout_constraintBottom_toBottomOf="@id/input_search" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Saved food waste card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -145,6 +167,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Browse by category -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -197,6 +220,7 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
+            <!-- Available donations -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -216,11 +240,10 @@
                 android:layout_marginBottom="24dp">
 
                 <include layout="@layout/donation_card_free" />
-
                 <include layout="@layout/donation_card_sale" />
-
             </LinearLayout>
 
+            <!-- Nearby donations -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -239,7 +262,6 @@
                 android:paddingEnd="24dp">
 
                 <include layout="@layout/donation_card_nearby" />
-
                 <include layout="@layout/donation_card_nearby_2" />
 
             </LinearLayout>
@@ -247,6 +269,7 @@
         </LinearLayout>
     </ScrollView>
 
+    <!-- Bottom navigation bar -->
     <LinearLayout
         android:id="@+id/bottom_navigation_bar"
         android:layout_width="match_parent"
@@ -260,6 +283,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout style="@style/BottomNavTabInactive">
+
             <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/home" />
             <TextView style="@style/BottomNavTextInactive" android:text="Home" />
         </LinearLayout>
@@ -268,13 +292,11 @@
             <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/global_search" />
             <TextView style="@style/BottomNavTextInactive" android:text="Explore" />
         </LinearLayout>
+
         <LinearLayout style="@style/BottomNavTabActive" android:id="@+id/nav_pub_tab">
             <ImageView style="@style/BottomNavIconActive" android:src="@drawable/contour" />
             <TextView style="@style/BottomNavTextActive" android:text="pub" />
         </LinearLayout>
-
-
-
 
         <LinearLayout style="@style/BottomNavTabInactive">
             <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/notification" />

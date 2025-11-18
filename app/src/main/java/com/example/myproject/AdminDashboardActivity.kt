@@ -1,4 +1,4 @@
-package com.example.myproject // IMPORTANT: Remplacez par votre nom de package réel
+package com.example.myproject
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,101 +20,64 @@ class AdminDashboardActivity : AppCompatActivity(), NavigationView.OnNavigationI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Assurez-vous d'avoir le layout admin_dashboard_mobile.xml
         setContentView(R.layout.admin_dashboard_mobile)
 
-        // 1. Initialisation des vues
+        // Vérification token
+        val token = getSharedPreferences("my_app_prefs", MODE_PRIVATE).getString("TOKEN", "") ?: ""
+        if (token.isEmpty()) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
         toolbar = findViewById(R.id.toolbar)
 
-        // 2. Configuration de la Toolbar comme ActionBar
         setSupportActionBar(toolbar)
-        // Masque le titre par défaut pour laisser la place au TextView personnalisé ou au logo
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // 3. Configuration du DrawerLayout et du bouton "hamburger"
         val toggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            toolbar,
-            R.string.navigation_drawer_open, // À définir dans strings.xml
-            R.string.navigation_drawer_close // À définir dans strings.xml
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // 4. Définir le listener pour les éléments du menu de navigation
         navigationView.setNavigationItemSelectedListener(this)
-
-        // 5. Configuration de la gestion moderne du bouton/geste de retour
         setupOnBackPressedDispatcher()
-
-        // Sélection par défaut
         navigationView.setCheckedItem(R.id.nav_dashboard)
     }
 
-    /**
-     * Configure le OnBackPressedDispatcher pour gérer le DrawerLayout.
-     * Le tiroir est prioritaire sur l'action de retour par défaut.
-     */
     private fun setupOnBackPressedDispatcher() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Si le tiroir est ouvert, le fermer.
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START)
                 } else {
-                    // Sinon, utiliser le comportement par défaut (fermer l'activité).
-                    isEnabled = false // Désactiver temporairement ce callback
-                    onBackPressedDispatcher.onBackPressed() // Appeler le système
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
                 }
             }
         }
         onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    /**
-     * Gère les clics sur les éléments du menu de navigation latérale.
-     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
         when (item.itemId) {
-            R.id.nav_dashboard -> {
-                Toast.makeText(this, "Dashboard sélectionné", Toast.LENGTH_SHORT).show()
-                // Logique de chargement du fragment/vue Dashboard
-            }
-            R.id.nav_analytics -> {
-                Toast.makeText(this, "Analytics sélectionné", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_users -> {
-                // Lancer l'activité de gestion des utilisateurs
-                val intent = Intent(this, AdminUsersActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.nav_associations -> {
-                Toast.makeText(this, "Associations sélectionné", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_donations -> {
-                Toast.makeText(this, "Donations sélectionné", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_reports -> {
-                Toast.makeText(this, "Reports sélectionné", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_tickets -> {
-                Toast.makeText(this, "Tickets sélectionné", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_settings -> {
-                Toast.makeText(this, "Settings sélectionné", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_logout -> {
-                Toast.makeText(this, "Déconnexion...", Toast.LENGTH_SHORT).show()
-                // Logique de déconnexion et redirection vers l'écran de connexion
-            }
+            R.id.nav_users -> startActivity(Intent(this, AdminUsersActivity::class.java))
+            R.id.nav_logout -> logout()
+            else -> Toast.makeText(this, "Menu: ${item.title}", Toast.LENGTH_SHORT).show()
         }
-
-        // Ferme le tiroir de navigation après la sélection
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun logout() {
+        getSharedPreferences("my_app_prefs", MODE_PRIVATE).edit().clear().apply()
+        startActivity(Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
+        finish()
     }
 }
