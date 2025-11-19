@@ -39,10 +39,10 @@ class UserAdapter(
         holder.nameTextView.text = user.username
         holder.emailTextView.text = user.email
         holder.roleTextView.text = "Role: ${user.role.name}"
-        holder.statusTextView.text = if (user.validated) "Approved" else "Pending"
+        holder.statusTextView.text = if (user.isValidatedByAdmin) "Approved" else "Pending"
 
         // --- Boutons visibles uniquement si compte non validé ---
-        val isPending = !user.validated
+        val isPending = !user.isValidatedByAdmin
         holder.approveButton.visibility = if (isPending) View.VISIBLE else View.GONE
         holder.refuseButton.visibility = if (isPending) View.VISIBLE else View.GONE
 

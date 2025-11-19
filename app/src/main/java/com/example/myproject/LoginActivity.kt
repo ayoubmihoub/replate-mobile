@@ -28,11 +28,12 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
 
+        // 1. Vérification automatique au démarrage (si déjà connecté)
         if (checkExistingTokenAndNavigate()) return
 
         initViews()
         initViewModel()
-        observeViewModel()
+        observeViewModel() // C'est ici que la navigation se décide
         setupListeners()
     }
 
@@ -51,34 +52,44 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        // ATTENTION : Le clic ne navigue pas directement !
+        // Il lance seulement la vérification auprès du serveur.
         loginButton.setOnClickListener {
             if (validateLoginInputs()) {
                 val email = inputEmail.text.toString().trim()
                 val password = inputPassword.text.toString()
+
+                // On demande au ViewModel de contacter l'API
                 loginViewModel.loginUser(email, password)
             } else {
                 showToast("Veuillez vérifier votre email et mot de passe.")
             }
         }
 
+        // Ici c'est un lien simple, donc on peut naviguer directement
         signupLink.setOnClickListener {
             navigateToSignup()
         }
     }
 
     private fun observeViewModel() {
+        // Gestion des erreurs (Toast)
         loginViewModel.loginStatus.observe(this) { status ->
             if (status.isNotEmpty()) showToast(status)
         }
 
+        // C'EST ICI QUE LA NAVIGATION SE DÉCLENCHE
+        // Une fois que l'API répond "OK" avec un User, on navigue.
         loginViewModel.authResponse.observe(this) { authResponse ->
             authResponse?.let { handleSuccessfulLogin(it) }
         }
 
+        // Gestion du chargement (désactiver les boutons)
         loginViewModel.isLoading.observe(this) { updateUIForLoading(it) }
     }
 
     private fun handleSuccessfulLogin(authResponse: com.example.myproject.data.model.AuthResponse) {
+        // Sauvegarde du token et du rôle
         val sharedPref = getSharedPreferences("my_app_prefs", MODE_PRIVATE)
         sharedPref.edit().apply {
             putString("TOKEN", authResponse.token)
@@ -88,10 +99,8 @@ class LoginActivity : AppCompatActivity() {
             apply()
         }
 
-        when (authResponse.role) {
-            UserRole.ADMIN -> navigateToAdminDashboard()
-            else -> navigateToMainFlow()
-        }
+        // Redirection intelligente basée sur le rôle REÇU du serveur
+        navigateBasedOnRole(authResponse.role)
     }
 
     private fun checkExistingTokenAndNavigate(): Boolean {
@@ -101,13 +110,24 @@ class LoginActivity : AppCompatActivity() {
             val roleName = sharedPref.getString("ROLE", UserRole.INDIVIDUAL.name) ?: UserRole.INDIVIDUAL.name
             try {
                 val role = UserRole.valueOf(roleName)
-                if (role == UserRole.ADMIN) navigateToAdminDashboard() else navigateToMainFlow()
+                navigateBasedOnRole(role)
                 return true
             } catch (e: IllegalArgumentException) {
                 sharedPref.edit().remove("TOKEN").remove("ROLE").apply()
             }
         }
         return false
+    }
+
+    /**
+     * Logique centrale de navigation (appelée uniquement après succès)
+     */
+    private fun navigateBasedOnRole(role: UserRole) {
+        when (role) {
+            UserRole.ADMIN -> navigateToAdminDashboard()
+            UserRole.INDIVIDUAL -> navigateToHome2()
+            else -> navigateToHomePage()
+        }
     }
 
     private fun updateUIForLoading(isLoading: Boolean) {
@@ -141,8 +161,17 @@ class LoginActivity : AppCompatActivity() {
         return isValid
     }
 
-    private fun navigateToMainFlow() {
-        startActivity(Intent(this, AllowLocationActivity::class.java).apply {
+    // --- Fonctions de navigation ---
+
+    private fun navigateToHome2() {
+        startActivity(Intent(this, Home2Activity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
+        finish()
+    }
+
+    private fun navigateToHomePage() {
+        startActivity(Intent(this, HomePage::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
         finish()

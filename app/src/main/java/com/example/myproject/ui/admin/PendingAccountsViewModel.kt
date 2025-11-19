@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.myproject.data.model.MessageResponse
 import com.example.myproject.data.model.User
 import com.example.myproject.data.remote.RetrofitClient
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -70,8 +71,8 @@ class PendingAccountsViewModel(private val token: String) : ViewModel() {
     fun validateAccount(userId: Long) {
         _statusMessage.value = "Validation du compte en cours..."
 
-        RetrofitClient.api.validateAccount(userId, token).enqueue(object : Callback<MessageResponse> {
-            override fun onResponse(call: Call<MessageResponse>, response: Response<MessageResponse>) {
+        RetrofitClient.api.validateAccount(userId, token).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
                     _statusMessage.value = "Compte validé avec succès!"
                     // Une fois validé, on recharge la liste pour le retirer de l'affichage
@@ -86,7 +87,7 @@ class PendingAccountsViewModel(private val token: String) : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 _statusMessage.value = "Erreur réseau: ${t.message}"
             }
         })

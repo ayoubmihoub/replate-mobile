@@ -44,7 +44,7 @@ class LoginModelView(private val loginRepository: LoginRepository) : ViewModel()
                             // Cas 2 : Autres Rôles (INDIVIDUAL, MERCHANT, ASSOCIATION)
                             // Ces rôles n'ont PAS besoin de la vérification isValidate (ou l'on suppose qu'elle est toujours True)
                             UserRole.INDIVIDUAL, UserRole.MERCHANT, UserRole.ASSOCIATION -> {
-                                if (auth.isValidated) {
+                                if (auth.isVerified) {
                                     // On peut toujours ajouter une vérification de sécurité sur isValidate,
                                     // mais si le serveur renvoie Success, on considère la connexion comme réussie.
                                     _authResponse.value = auth

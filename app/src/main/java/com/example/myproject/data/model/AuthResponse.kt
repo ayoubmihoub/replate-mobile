@@ -17,6 +17,6 @@ data class AuthResponse(
     @SerializedName("jwtToken")
     val token: String,
 
-    @SerializedName("isValidated")
-    val isValidated: Boolean
+    @SerializedName("isVerified")
+    val isVerified: Boolean
 )

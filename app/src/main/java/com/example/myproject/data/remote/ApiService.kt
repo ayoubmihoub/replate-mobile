@@ -7,6 +7,7 @@ import com.example.myproject.data.model.AuthResponse
 import com.example.myproject.data.model.MessageResponse
 import com.example.myproject.data.model.RegisterRequest
 import com.example.myproject.data.model.User
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -30,5 +31,5 @@ interface ApiService {
     fun validateAccount(
         @Path("id") userId: Long,
         @Header("Authorization") token: String
-    ): Call<MessageResponse>
+    ): Call<ResponseBody>
 }
