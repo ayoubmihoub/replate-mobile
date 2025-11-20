@@ -25,6 +25,10 @@ class SignupAssociation2Activity : AppCompatActivity() {
     private lateinit var nextButton: Button
     private lateinit var previousButton: Button
 
+    // NOUVELLES DÉCLARATIONS POUR LA NAVIGATION CROISÉE
+    private lateinit var btnIndividual: Button
+    private lateinit var btnMerchant: Button
+
     // --- LANCEURS D'ACTIVITÉS POUR LA SÉLECTION DE FICHIERS ---
 
     // Lanceur pour la sélection de l'image de profil ("image/*")
@@ -69,6 +73,27 @@ class SignupAssociation2Activity : AppCompatActivity() {
         inputVerificationDocument = findViewById(R.id.input_verification_document)
         nextButton = findViewById(R.id.btn_next)
         previousButton = findViewById(R.id.btn_previous)
+
+        // Initialisation des boutons de navigation croisée
+        btnIndividual = findViewById(R.id.btn_individual)
+        btnMerchant = findViewById(R.id.btn_merchant)
+
+        // --- GESTION DE LA NAVIGATION CROISÉE ---
+
+        // Clic sur 'Individual' -> Activity4
+        btnIndividual.setOnClickListener {
+            val intent = Intent(this, Activity4::class.java)
+            startActivity(intent)
+            finishAffinity() // Ferme toutes les activités du flux actuel
+        }
+
+        // Clic sur 'Merchant' -> SignupMerchant1Activity
+        btnMerchant.setOnClickListener {
+            val intent = Intent(this, SignupMerchant1Activity::class.java)
+            startActivity(intent)
+            finishAffinity() // Ferme toutes les activités du flux actuel
+        }
+        // ------------------------------------
 
         // 2. --- GESTION DU CLIC POUR L'UPLOAD DES FICHIERS ---
         inputProfilePicture.setOnClickListener {

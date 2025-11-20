@@ -12,6 +12,10 @@ class SignupMerchant3Activity : AppCompatActivity() {
 
     private lateinit var incomingIntent: Intent
 
+    // NOUVELLES DÉCLARATIONS
+    private lateinit var btnIndividual: Button
+    private lateinit var btnAssociation: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_merchant3)
@@ -21,6 +25,29 @@ class SignupMerchant3Activity : AppCompatActivity() {
 
         val createAccountButton: Button = findViewById(R.id.btn_create_account)
         val previousButton: Button = findViewById(R.id.btn_previous)
+
+        // Initialisation des boutons de navigation croisée
+        // 🚨 Assurez-vous que les IDs btn_individual et btn_association existent dans signup_merchant3.xml
+        btnIndividual = findViewById(R.id.btn_individual)
+        btnAssociation = findViewById(R.id.btn_association)
+
+        // --- LOGIQUE DE NAVIGATION CROISÉE ---
+
+        // Clic sur 'Individual' -> Activity4
+        btnIndividual.setOnClickListener {
+            val intent = Intent(this, Activity4::class.java)
+            startActivity(intent)
+            finishAffinity() // Ferme toutes les activités du flux actuel
+        }
+
+        // Clic sur 'Association' -> SignupAssociation1Activity
+        btnAssociation.setOnClickListener {
+            val intent = Intent(this, SignupAssociation1Activity::class.java)
+            startActivity(intent)
+            finishAffinity() // Ferme toutes les activités du flux actuel
+        }
+        // ------------------------------------
+
 
         // --- Logique du bouton "Create Account" ---
         createAccountButton.setOnClickListener {

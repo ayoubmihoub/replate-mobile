@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import android.util.Patterns
-import android.widget.TextView // <-- Import nécessaire pour le lien de connexion
+import android.widget.TextView
 
 class SignupMerchant1Activity : AppCompatActivity() {
 
@@ -20,7 +20,7 @@ class SignupMerchant1Activity : AppCompatActivity() {
     // Ajout des vues pour les liens de navigation croisée
     private lateinit var individualButton: Button
     private lateinit var associationButton: Button
-    private lateinit var loginLink: TextView
+    private lateinit var loginLink: TextView // Déclaration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,16 +33,15 @@ class SignupMerchant1Activity : AppCompatActivity() {
         nextButton = findViewById(R.id.btn_next)
         previousButton = findViewById(R.id.btn_previous)
 
-        // Initialisation des nouveaux boutons de navigation croisée (Assumés présents dans le layout)
+        // Initialisation des nouveaux boutons de navigation croisée
         individualButton = findViewById(R.id.btn_individual)
         associationButton = findViewById(R.id.btn_association)
-        //loginLink = findViewById(R.id.text_login_link)
-
+        loginLink = findViewById(R.id.text_login) // <-- CORRECTION : Initialisation avec l'ID correct
 
         // --- LOGIQUE DE NAVIGATION CROISÉE (Ajoutée) ---
 
         // Clic sur le lien 'Login'
-        loginLink.setOnClickListener {
+        loginLink.setOnClickListener { // <-- CORRECTION : Ajout de l'écouteur de clic
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finishAffinity() // Ferme toutes les activités du flux d'inscription

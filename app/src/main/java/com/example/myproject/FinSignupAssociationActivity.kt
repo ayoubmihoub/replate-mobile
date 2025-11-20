@@ -18,7 +18,7 @@ class FinSignupAssociationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_4) // Réutilisation du layout précédent
+        setContentView(R.layout.login) // Réutilisation du layout précédent
 
         // 1. Initialisation du ViewModel
         registerViewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)

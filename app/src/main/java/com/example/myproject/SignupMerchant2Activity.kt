@@ -16,6 +16,11 @@ class SignupMerchant2Activity : AppCompatActivity() {
     private var verificationDocumentUri: Uri? = null
     private lateinit var incomingIntent: Intent
 
+    // NOUVELLES DÉCLARATIONS
+    private lateinit var btnIndividual: Button
+    private lateinit var btnAssociation: Button
+    // ...
+
     // Lanceur pour la sélection de l'image de profil
     private val selectPictureLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
@@ -51,6 +56,28 @@ class SignupMerchant2Activity : AppCompatActivity() {
         // Récupérer les données de l'activité précédente
         incomingIntent = intent
 
+        // Initialisation des boutons de navigation croisée
+        // 🚨 Assurez-vous que les IDs btn_individual et btn_association existent dans signup_merchant2.xml
+        btnIndividual = findViewById(R.id.btn_individual)
+        btnAssociation = findViewById(R.id.btn_association)
+
+        // --- LOGIQUE DE NAVIGATION CROISÉE ---
+
+        // Clic sur 'Individual' -> Activity4
+        btnIndividual.setOnClickListener {
+            val intent = Intent(this, Activity4::class.java)
+            startActivity(intent)
+            finishAffinity()
+        }
+
+        // Clic sur 'Association' -> SignupAssociation1Activity
+        btnAssociation.setOnClickListener {
+            val intent = Intent(this, SignupAssociation1Activity::class.java)
+            startActivity(intent)
+            finishAffinity()
+        }
+        // ------------------------------------
+
         // 1. Définir le gestionnaire de clic pour le champ PHOTO DE PROFIL
         val pictureInput: EditText = findViewById(R.id.input_profile_picture)
         pictureInput.setOnClickListener {
@@ -67,8 +94,15 @@ class SignupMerchant2Activity : AppCompatActivity() {
         // 3. Logique de navigation vers l'étape 3
         val nextButton: Button = findViewById(R.id.btn_next)
         nextButton.setOnClickListener {
-            // Note: La vérification obligatoire du document a été retirée,
-            // permettant de passer si l'URI est null.
+
+            // --- VÉRIFICATION OBLIGATOIRE DU DOCUMENT ---
+            if (verificationDocumentUri == null) {
+                Toast.makeText(this, "Le document de vérification est requis.", Toast.LENGTH_SHORT).show()
+                // Afficher l'erreur sur l'EditText
+                findViewById<EditText>(R.id.input_verification_document).error = "Ce champ est requis."
+                return@setOnClickListener // Empêche la poursuite
+            }
+            // --------------------------------------------
 
             val documentUriString = verificationDocumentUri?.toString()
             val pictureUriString = profilePictureUri?.toString()

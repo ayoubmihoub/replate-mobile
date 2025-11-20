@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.Toast
 import android.widget.EditText
 import android.widget.CheckBox
+import android.widget.TextView // <-- Import nécessaire
 import androidx.appcompat.app.AppCompatActivity
 
 class SignupAssociation3Activity : AppCompatActivity() {
@@ -17,7 +18,12 @@ class SignupAssociation3Activity : AppCompatActivity() {
     private lateinit var passwordInput: EditText
     private lateinit var confirmPasswordInput: EditText
     private lateinit var termsCheckbox: CheckBox
-    private lateinit var incomingIntent: Intent // Pour stocker l'Intent de l'activité précédente
+    private lateinit var incomingIntent: Intent
+
+    // NOUVELLES DÉCLARATIONS POUR LA NAVIGATION CROISÉE
+    private lateinit var btnIndividual: Button
+    private lateinit var btnMerchant: Button
+    private lateinit var loginLink: TextView // <-- NOUVELLE DÉCLARATION
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,12 +32,42 @@ class SignupAssociation3Activity : AppCompatActivity() {
         // Récupérer l'Intent contenant toutes les données précédentes
         incomingIntent = intent
 
-        // 1. Trouver les vues
+        // 1. Trouver les vues standard
         passwordInput = findViewById(R.id.input_password)
         confirmPasswordInput = findViewById(R.id.input_confirm_password)
         termsCheckbox = findViewById(R.id.checkbox_terms)
         val previousButton: Button = findViewById(R.id.btn_previous)
         val createAccountButton: Button = findViewById(R.id.btn_create_account)
+
+        // Initialisation des boutons de navigation croisée
+        btnIndividual = findViewById(R.id.btn_individual)
+        btnMerchant = findViewById(R.id.btn_merchant)
+        loginLink = findViewById(R.id.text_login) // <-- INITIALISATION DU LIEN DE CONNEXION
+
+        // --- GESTION DE LA NAVIGATION CROISÉE ---
+
+        // Clic sur 'Individual' -> Activity4
+        btnIndividual.setOnClickListener {
+            val intent = Intent(this, Activity4::class.java)
+            startActivity(intent)
+            finishAffinity()
+        }
+
+        // Clic sur 'Merchant' -> SignupMerchant1Activity
+        btnMerchant.setOnClickListener {
+            val intent = Intent(this, SignupMerchant1Activity::class.java)
+            startActivity(intent)
+            finishAffinity()
+        }
+
+        // Clic sur le lien 'Login' -> LoginActivity
+        loginLink.setOnClickListener { // <-- NOUVEL ÉCOUTEUR DE CLIC
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finishAffinity() // Ferme toutes les activités du flux actuel
+        }
+        // ------------------------------------
+
 
         // 2. Implémenter le clic sur "Previous"
         previousButton.setOnClickListener {

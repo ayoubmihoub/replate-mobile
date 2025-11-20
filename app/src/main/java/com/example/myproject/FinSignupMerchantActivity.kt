@@ -22,7 +22,7 @@
             super.onCreate(savedInstanceState)
             // Note: Nous n'avons pas besoin d'un layout complexe ici, le travail se fait en arrière-plan
             // ou vous pouvez utiliser le layout d'Activity6 si les IDs sont les mêmes.
-            setContentView(R.layout.activity_6) // Réutilisation du layout précédent pour l'affichage de base.
+            setContentView(R.layout.login) // Réutilisation du layout précédent pour l'affichage de base.
 
             // 1. Initialisation du ViewModel
             registerViewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
