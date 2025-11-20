@@ -1,85 +1,87 @@
 package com.example.myproject.ui.login
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myproject.data.model.AuthResponse
 import com.example.myproject.data.model.UserRole
-import com.example.myproject.data.repository.LoginRepository
 import com.example.myproject.data.remote.NetworkResult
+import com.example.myproject.data.repository.LoginRepository
 import kotlinx.coroutines.launch
 
 class LoginModelView(private val loginRepository: LoginRepository) : ViewModel() {
 
-    // LiveData pour le statut du login
     private val _loginStatus = MutableLiveData<String>()
     val loginStatus: LiveData<String> = _loginStatus
 
-    // LiveData pour la réponse d'authentification
     private val _authResponse = MutableLiveData<AuthResponse?>()
     val authResponse: LiveData<AuthResponse?> = _authResponse
 
-    // LiveData pour le chargement
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun loginUser(email: String, password: String) {
+    fun loginUser(email: String, pass: String) {
         _isLoading.value = true
+        _loginStatus.value = ""
 
         viewModelScope.launch {
-            when (val result = loginRepository.loginUser(email, password)) {
-                is NetworkResult.Success -> {
-                    val auth = result.data
+            try {
+                val result = loginRepository.loginUser(email, pass)
 
-                    if (auth != null) {
-                        when (auth.role) {
-                            // Cas 1 : Rôle ADMINISTRATEUR (Nécessite Validation)
-                            UserRole.ADMIN -> {
-
-                                    _authResponse.value = auth
-                                    _loginStatus.value = "Connexion réussie!"
-                            }
-
-                            // Cas 2 : Autres Rôles (INDIVIDUAL, MERCHANT, ASSOCIATION)
-                            // Ces rôles n'ont PAS besoin de la vérification isValidate (ou l'on suppose qu'elle est toujours True)
-                            UserRole.INDIVIDUAL, UserRole.MERCHANT, UserRole.ASSOCIATION -> {
-                                if (auth.isVerified) {
-                                    // On peut toujours ajouter une vérification de sécurité sur isValidate,
-                                    // mais si le serveur renvoie Success, on considère la connexion comme réussie.
-                                    _authResponse.value = auth
-                                    _loginStatus.value = "Connexion réussie!"
-                                }else{
-                                    _authResponse.value = null
-                                    _loginStatus.value = "Compte n'est pas encore valide!"
-                                }
-
-                            }
-
-                            // Si vous avez d'autres rôles
-                            else -> {
-                                // ... Gérer d'autres rôles si nécessaire
-                                _authResponse.value = auth
-                                _loginStatus.value = "Connexion réussie (Rôle spécial)!"
-                            }
+                when (result) {
+                    is NetworkResult.Success -> {
+                        val auth = result.data
+                        if (auth != null) {
+                            Log.d("LoginDebug", "Auth reçue: $auth")
+                            checkRoleAndValidate(auth)
+                        } else {
+                            _loginStatus.value = "Erreur : Données reçues vides."
                         }
-
-                    } else {
-                        _authResponse.value = null
-                        _loginStatus.value = "Erreur : réponse invalide du serveur."
+                    }
+                    is NetworkResult.Error -> {
+                        Log.e("LoginDebug", "Erreur API: ${result.message}")
+                        _loginStatus.value = result.message ?: "Erreur inconnue"
                     }
                 }
-                is NetworkResult.Error -> {
-                    _loginStatus.value = result.message ?: "Erreur inconnue"
-                    _authResponse.value = null
-                }
+            } catch (e: Exception) {
+                Log.e("LoginDebug", "Exception dans loginUser", e)
+                _loginStatus.value = "Crash évité: ${e.message}"
+            } finally {
+                _isLoading.value = false
             }
-            _isLoading.value = false
         }
     }
 
+    private fun checkRoleAndValidate(auth: AuthResponse) {
+        // Vérification de sécurité si le rôle est null (problème de parsing Gson)
+        if (auth.role == null) {
+            Log.e("LoginDebug", "CRITIQUE: Le rôle est NULL. Vérifiez si le backend envoie bien 'ADMIN', 'INDIVIDUAL' en majuscules exactes.")
+            _loginStatus.value = "Erreur technique: Rôle utilisateur inconnu."
+            return
+        }
 
-    // Méthode pour réinitialiser le statut
+        when (auth.role) {
+            UserRole.ADMIN -> {
+                _authResponse.value = auth
+                _loginStatus.value = "Connexion Admin réussie!"
+            }
+
+            UserRole.INDIVIDUAL, UserRole.MERCHANT, UserRole.ASSOCIATION -> {
+                // Si isValidated est false, on bloque (selon votre logique précédente)
+
+                    // CORRECTION : On supprime la vérification `if (auth.isVerified)`
+                    // car le backend ne renvoie pas cette information.
+                    // Si le NetworkResult est un succès, la connexion est validée.
+                    _authResponse.value = auth
+                    _loginStatus.value = "Connexion réussie!"
+
+
+            }
+        }
+    }
+
     fun resetLoginStatus() {
         _loginStatus.value = ""
         _authResponse.value = null

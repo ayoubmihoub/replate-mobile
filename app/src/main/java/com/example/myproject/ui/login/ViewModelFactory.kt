@@ -1,4 +1,4 @@
-package com.example.myproject.data.remote // ou .ui.login selon votre préférence
+package com.example.myproject.data.ui.login // ou .ui.login selon votre préférence
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

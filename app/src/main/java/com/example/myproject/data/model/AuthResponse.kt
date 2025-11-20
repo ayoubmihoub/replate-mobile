@@ -3,20 +3,18 @@ package com.example.myproject.data.model
 import com.google.gson.annotations.SerializedName
 
 data class AuthResponse(
-    // Correspond au champ 'userId' du JSON
     @SerializedName("userId")
     val id: Long,
 
-    // Correspond au champ 'email' du JSON
-    val email: String,
+    val email: String?,
 
-    // Correspond au champ 'role' du JSON
-    val role: UserRole,
+    // Rendre le rôle nullable pour éviter le crash si le mapping échoue
+    val role: UserRole?,
 
-    // Correspond au champ 'jwtToken' du JSON
     @SerializedName("jwtToken")
-    val token: String,
+    val token: String?,
 
-    @SerializedName("isVerified")
-    val isVerified: Boolean
+    // On garde les deux possibilités pour être sûr de capter la validation
+    @SerializedName(value = "isValidated", alternate = ["isVerified", "validated", "verified"])
+    val isValidated: Boolean = false
 )
