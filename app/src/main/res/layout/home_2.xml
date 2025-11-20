@@ -1,291 +1,306 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start"
     tools:context=".Home2Activity">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_bar">
+        android:layout_height="match_parent"
+        android:background="#F5F5F5">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="16dp">
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_navigation_bar">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:paddingTop="24dp"
+                android:orientation="vertical"
                 android:paddingBottom="16dp">
 
-                <View
-                    android:id="@+id/profile_placeholder"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/profile"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="16dp">
 
-                <LinearLayout
+                    <View
+                        android:id="@+id/profile_placeholder"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/profile"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintStart_toEndOf="@id/profile_placeholder"
+                        app:layout_constraintTop_toTopOf="@id/profile_placeholder"
+                        app:layout_constraintBottom_toBottomOf="@id/profile_placeholder">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Current Location"
+                            android:textSize="12sp"
+                            android:textColor="#A9A9A9" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tunisia, Ariana 1027"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black"
+                            android:drawableStart="@drawable/location"
+                            android:drawablePadding="4dp" />
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/btn_menu"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:backgroundTint="@color/white"
+                        android:src="@drawable/hum"
+                        android:padding="8dp"
+                        app:cornerRadius="16dp"  app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Menu" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:layout_marginBottom="16dp">
+
+                    <EditText
+                        android:id="@+id/input_search"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+
+                        android:hint="Search ..."
+                        android:textColorHint="#A9A9A9"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="50dp"
+                        android:drawableStart="@drawable/search"
+                        android:drawablePadding="10dp"
+                        android:inputType="text"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/tri"
+                        android:contentDescription="Filter"
+                        android:layout_marginEnd="12dp"
+                        app:layout_constraintEnd_toEndOf="@id/input_search"
+                        app:layout_constraintTop_toTopOf="@id/input_search"
+                        app:layout_constraintBottom_toBottomOf="@id/input_search" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="#FFEEE8"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12.5 Kg"
+                            android:textSize="32sp"
+                            android:textStyle="bold"
+                            android:textColor="#FF4500" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Saved food waste"
+                            android:textSize="16sp"
+                            android:textColor="#FF4500" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintStart_toEndOf="@id/profile_placeholder"
-                    app:layout_constraintTop_toTopOf="@id/profile_placeholder"
-                    app:layout_constraintBottom_toBottomOf="@id/profile_placeholder">
+                    android:text="Browse by category"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginBottom="12dp" />
 
-                    <TextView
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:scrollbars="none"
+                    android:layout_marginBottom="24dp">
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Current Location"
-                        android:textSize="12sp"
-                        android:textColor="#A9A9A9" />
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tunisia, Ariana 1027"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:drawableStart="@drawable/location"
-                        android:drawablePadding="4dp" />
-                </LinearLayout>
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="All types"
+                            android:textColor="@android:color/black"
+                            android:backgroundTint="#FFC107"
+                            android:drawableStart="@drawable/all_types"
+                            android:drawablePadding="8dp"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:layout_marginEnd="8dp"
+                            app:cornerRadius="20dp" />
 
-                <ImageButton
-                    android:id="@+id/btn_menu"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:backgroundTint="@color/white"
-                    android:src="@drawable/hum"
-                    android:padding="8dp"
-                    app:cornerRadius="16dp"  app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:scaleType="fitCenter"
-                    android:contentDescription="Menu" />
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Baked goods"
+                            android:textColor="#808080"
+                            android:backgroundTint="@android:color/white"
+                            android:drawableStart="@drawable/baked"
+                            android:drawablePadding="8dp"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:layout_marginEnd="8dp"
+                            app:cornerRadius="20dp" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+                </HorizontalScrollView>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:layout_marginBottom="16dp">
-
-                <EditText
-                    android:id="@+id/input_search"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-
-                    android:hint="Search ..."
-                    android:textColorHint="#A9A9A9"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="50dp"
-                    android:drawableStart="@drawable/search"
-                    android:drawablePadding="10dp"
-                    android:inputType="text"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/tri"
-                    android:contentDescription="Filter"
-                    android:layout_marginEnd="12dp"
-                    app:layout_constraintEnd_toEndOf="@id/input_search"
-                    app:layout_constraintTop_toTopOf="@id/input_search"
-                    app:layout_constraintBottom_toBottomOf="@id/input_search" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Available donations"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginBottom="12dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="#FFEEE8"
-                    android:padding="16dp">
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:layout_marginBottom="24dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="12.5 Kg"
-                        android:textSize="32sp"
-                        android:textStyle="bold"
-                        android:textColor="#FF4500" />
+                    <include layout="@layout/donation_card_free" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Saved food waste"
-                        android:textSize="16sp"
-                        android:textColor="#FF4500" />
+                    <include layout="@layout/donation_card_sale" />
+
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Browse by category"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginStart="24dp"
-                android:layout_marginBottom="12dp" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:scrollbars="none"
-                android:layout_marginBottom="24dp">
-
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:text="Nearby donations"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginBottom="12dp" />
 
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="All types"
-                        android:textColor="@android:color/black"
-                        android:backgroundTint="#FFC107"
-                        android:drawableStart="@drawable/all_types"
-                        android:drawablePadding="8dp"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:layout_marginEnd="8dp"
-                        app:cornerRadius="20dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp">
 
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Baked goods"
-                        android:textColor="#808080"
-                        android:backgroundTint="@android:color/white"
-                        android:drawableStart="@drawable/baked"
-                        android:drawablePadding="8dp"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:layout_marginEnd="8dp"
-                        app:cornerRadius="20dp" />
+                    <include layout="@layout/donation_card_nearby" />
+
+                    <include layout="@layout/donation_card_nearby_2" />
 
                 </LinearLayout>
-            </HorizontalScrollView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Available donations"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginStart="24dp"
-                android:layout_marginBottom="12dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:layout_marginBottom="24dp">
-
-                <include layout="@layout/donation_card_free" />
-
-                <include layout="@layout/donation_card_sale" />
 
             </LinearLayout>
+        </ScrollView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nearby donations"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginStart="24dp"
-                android:layout_marginBottom="12dp" />
+        <LinearLayout
+            android:id="@+id/bottom_navigation_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@android:color/white"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:elevation="8dp"
+            android:weightSum="5"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
+            <LinearLayout style="@style/BottomNavTabInactive">
+                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/home" />
+                <TextView style="@style/BottomNavTextInactive" android:text="Home" />
+            </LinearLayout>
 
-                <include layout="@layout/donation_card_nearby" />
+            <LinearLayout style="@style/BottomNavTabInactive">
+                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/global_search" />
+                <TextView style="@style/BottomNavTextInactive" android:text="Explore" />
+            </LinearLayout>
+            <LinearLayout style="@style/BottomNavTabActive" android:id="@+id/nav_pub_tab">
+                <ImageView style="@style/BottomNavIconActive" android:src="@drawable/contour" />
+                <TextView style="@style/BottomNavTextActive" android:text="pub" />
+            </LinearLayout>
 
-                <include layout="@layout/donation_card_nearby_2" />
+            <LinearLayout style="@style/BottomNavTabInactive">
+                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/notification" />
+                <TextView style="@style/BottomNavTextInactive" android:text="Offers" />
+            </LinearLayout>
 
+            <LinearLayout style="@style/BottomNavTabInactive">
+                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/account" />
+                <TextView style="@style/BottomNavTextInactive" android:text="Profile" />
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/bottom_navigation_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@android:color/white"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:elevation="8dp"
-        android:weightSum="5"
-        app:layout_constraintBottom_toBottomOf="parent">
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout style="@style/BottomNavTabInactive">
-            <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/home" />
-            <TextView style="@style/BottomNavTextInactive" android:text="Home" />
-        </LinearLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/drawer_menu"
+        android:background="@android:color/white" />
 
-        <LinearLayout style="@style/BottomNavTabInactive">
-            <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/global_search" />
-            <TextView style="@style/BottomNavTextInactive" android:text="Explore" />
-        </LinearLayout>
-        <LinearLayout style="@style/BottomNavTabActive" android:id="@+id/nav_pub_tab">
-            <ImageView style="@style/BottomNavIconActive" android:src="@drawable/contour" />
-            <TextView style="@style/BottomNavTextActive" android:text="pub" />
-        </LinearLayout>
-
-
-
-
-        <LinearLayout style="@style/BottomNavTabInactive">
-            <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/notification" />
-            <TextView style="@style/BottomNavTextInactive" android:text="Offers" />
-        </LinearLayout>
-
-        <LinearLayout style="@style/BottomNavTabInactive">
-            <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/account" />
-            <TextView style="@style/BottomNavTextInactive" android:text="Profile" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

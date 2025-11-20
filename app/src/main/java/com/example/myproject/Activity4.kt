@@ -21,6 +21,7 @@ class Activity4 : AppCompatActivity() {
 
     // NOUVELLE DÉCLARATION
     private lateinit var associationButton: Button
+    private lateinit var btnMerchant : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +38,7 @@ class Activity4 : AppCompatActivity() {
 
         // 1. Initialisation du bouton "Association"
         associationButton = findViewById(R.id.btn_association)
-        val btnMerchant: Button = findViewById(R.id.btn_merchant)
+        btnMerchant = findViewById(R.id.btn_merchant)
 
         // --- GESTION DU CLIC "ASSOCIATION" ---
         associationButton.setOnClickListener {
@@ -45,6 +46,7 @@ class Activity4 : AppCompatActivity() {
             // 🚨 Assurez-vous que cette classe existe et est déclarée dans le Manifeste
             val intent = Intent(this, SignupAssociation1Activity::class.java)
             startActivity(intent)
+
             // Optionnel : Fermer Activity4 pour ne pas revenir en arrière
             // finish()
         }
@@ -53,8 +55,9 @@ class Activity4 : AppCompatActivity() {
             // 🚨 Assurez-vous que cette classe existe et est déclarée dans le Manifeste
             val intent = Intent(this, SignupMerchant1Activity::class.java)
             startActivity(intent)
+
+
             // Optionnel : Fermer Activity4 pour ne pas revenir en arrière
-            // finish()
         }
 
 

@@ -34,6 +34,7 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".AllowLocationActivity" />
         <activity android:name=".HomePage" />
+        <activity android:name=".Home2Activity" />
         <activity android:name=".MyAnnouncementsActivity" />
         <activity android:name=".NewAnnouncementActivity" />
         <activity android:name=".SignupAssociation1Activity" />

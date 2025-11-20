@@ -48,6 +48,17 @@ class LoginActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.button_login)
         signupLink = findViewById(R.id.text_signup_link)
     }
+    private fun navigateToAllowLocation(role: UserRole) {
+        val intent = Intent(this, AllowLocationActivity::class.java).apply {
+            // Passer le rôle pour que AllowLocationActivity sache où rediriger après
+            putExtra("TARGET_ROLE", role.name)
+
+            // Ces flags sont importants pour ne pas revenir à l'écran de Login
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish() // Fermer LoginActivity
+    }
 
     private fun initViewModel() {
         val apiService = RetrofitClient.api
@@ -145,9 +156,13 @@ class LoginActivity : AppCompatActivity() {
 
     private fun navigateBasedOnRole(role: UserRole) {
         when (role) {
-            UserRole.ADMIN -> navigateToAdminDashboard()
-            UserRole.INDIVIDUAL -> navigateToHome2()
-            else -> navigateToHomePage()
+            UserRole.ADMIN -> navigateToAdminDashboard() // L'Admin navigue toujours directement
+
+            // Tous les autres rôles commencent la navigation par l'écran de localisation
+            UserRole.INDIVIDUAL, UserRole.MERCHANT, UserRole.ASSOCIATION -> navigateToAllowLocation(role)
+
+            // Note: Les anciennes fonctions navigateToHome2() et navigateToHomePage()
+            // ne sont plus appelées ici pour l'écran de Login.
         }
     }
 

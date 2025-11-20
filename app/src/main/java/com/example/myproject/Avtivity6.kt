@@ -5,10 +5,11 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider // Import pour ViewModelProvider
-import com.example.myproject.data.model.UserRole // Import de l'énumération UserRole
-import com.example.myproject.ui.register.RegisterViewModel // Import de votre ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.myproject.data.model.UserRole
+import com.example.myproject.ui.register.RegisterViewModel
 
 /**
  * Activité finale du flux d'inscription.
@@ -29,13 +30,12 @@ class Activity6 : AppCompatActivity() {
         // 1. Initialisation du ViewModel
         registerViewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
 
-        // --- Récupération des données passées via Intent (Données d'Activity4 et Activity5) ---
+        // --- Récupération des données passées via Intent ---
         val incomingIntent = intent
         val fullName = incomingIntent.getStringExtra("fullName")
         val email = incomingIntent.getStringExtra("email")
-        val contact = incomingIntent.getStringExtra("contact") // Utilisé comme phoneNumber
+        val contact = incomingIntent.getStringExtra("contact")
         val location = incomingIntent.getStringExtra("location")
-        // Note: profileImageUri est ignoré pour l'appel API RegisterRequest car il n'est pas dans le modèle (seul documentUrl est présent et optionnel).
 
         // VÉRIFICATION CRITIQUE : Les données essentielles doivent être présentes.
         if (fullName.isNullOrBlank() || email.isNullOrBlank() || contact.isNullOrBlank()) {
@@ -49,50 +49,64 @@ class Activity6 : AppCompatActivity() {
         inputConfirmPassword = findViewById(R.id.input_confirm_password)
         val completeButton: Button = findViewById(R.id.btn_create_account)
         val prevButton: Button = findViewById(R.id.btn_previous)
+        val loginLink: TextView = findViewById(R.id.text_login_link)
+
+        // NOUVEAU: Bouton Merchant pour changer de flux d'inscription
+        val merchantButton: Button = findViewById(R.id.btn_merchant)
+
+
+        // --- LOGIQUE D'INSCRIPTION MERCHANT ---
+        merchantButton.setOnClickListener {
+            val intent = Intent(this, SignupMerchant1Activity::class.java)
+            startActivity(intent)
+            // Fermer toutes les activités précédentes dans la pile pour commencer le nouveau flux proprement
+            finishAffinity()
+        }
+
+        // --- LOGIQUE EXISTANTE ---
+
+        // Clic sur le lien de connexion
+        loginLink.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finishAffinity()
+        }
+
 
         // 2. Observation du statut d'inscription
 
-        // Affiche les messages d'état (Erreur réseau, En cours, Erreur serveur)
         registerViewModel.registrationStatus.observe(this) { status ->
             Toast.makeText(this, status, Toast.LENGTH_LONG).show()
         }
 
-        // Gère la réponse de succès de l'API
         registerViewModel.messageResponse.observe(this) { response ->
             if (response != null) {
-                // L'inscription a réussi. Naviguer vers l'écran de connexion/accueil.
                 Toast.makeText(this, "Compte créé! Vous pouvez maintenant vous connecter.", Toast.LENGTH_LONG).show()
-                // Exemple de navigation:
-                // val intent = Intent(this, LoginActivity::class.java)
-                // startActivity(intent)
-                // finishAffinity() // Ferme toutes les activités du flux d'inscription
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finishAffinity()
             }
         }
 
 
-        // --- 3. Logique du bouton Finaliser ---
+        // 3. Logique du bouton Finaliser (pour INDIVIDUAL)
         completeButton.setOnClickListener {
 
-            // Validation côté client (mots de passe)
             if (validateInputs()) {
 
                 val password = inputPassword.text.toString().trim()
-                // Mappage des champs de l'UI aux champs de l'API RegisterRequest
-                val username = fullName // full name utilisé comme username
-                val phoneNumber = contact // contact utilisé comme phoneNumber
-
-                // documentUrl est null car c'est un utilisateur individuel
+                val username = fullName
+                val phoneNumber = contact
                 val documentUrl: String? = null
 
-                // Déclenche l'appel API via le ViewModel
                 registerViewModel.registerUser(
                     email = email,
                     password = password,
-                    role = UserRole.INDIVIDUAL, // ⬅️ Utilisation de l'énumération comme confirmé
+                    role = UserRole.INDIVIDUAL,
                     username = username,
                     location = location,
                     phoneNumber = phoneNumber,
-                    documentUrl = documentUrl // Passé comme null car il est optionnel et non utilisé ici
+                    documentUrl = documentUrl
                 )
             }
         }

@@ -1,9 +1,5 @@
 package com.example.myproject
 
-
-
-
-
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
@@ -17,17 +13,24 @@ class MyAnnouncementsActivity : AppCompatActivity() {
         setContentView(R.layout.my_announcments)
 
 
-        // 1. Trouver le bouton par l'ID
+        // Trouver le bouton pour créer une nouvelle annonce
         val newAnnouncementButton = findViewById<CardView>(R.id.btn_new_announcement)
 
-        // 2. Définir l'action au clic
+        // Définir l'action pour la nouvelle annonce
         newAnnouncementButton.setOnClickListener {
-            // Créer un Intent pour aller à NewAnnouncementActivity
             val intent = Intent(this, NewAnnouncementActivity::class.java)
             startActivity(intent)
         }
 
-        // ... (Reste de votre code onCreate)
+        // --- LOGIQUE AJOUTÉE : ACTIVATION DU BOUTON RETOUR ---
+
+        // 1. Trouver le bouton 'Back' (btn_back)
+        val backButton = findViewById<ImageButton>(R.id.btn_back)
+
+        // 2. Définir l'action au clic : fermer cette activité
+        backButton.setOnClickListener {
+            finish()
+        }
     }
 
 }

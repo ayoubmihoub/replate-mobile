@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import android.util.Patterns
+import android.widget.TextView // <-- Import nécessaire pour le lien de connexion
 
 class SignupMerchant1Activity : AppCompatActivity() {
 
@@ -16,9 +17,13 @@ class SignupMerchant1Activity : AppCompatActivity() {
     private lateinit var nextButton: Button
     private lateinit var previousButton: Button
 
+    // Ajout des vues pour les liens de navigation croisée
+    private lateinit var individualButton: Button
+    private lateinit var associationButton: Button
+    private lateinit var loginLink: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // NOTE: Le nom du layout est assumé être signup_merchant1
         setContentView(R.layout.signup_merchant1)
 
         // 1. Initialisation des vues
@@ -28,7 +33,37 @@ class SignupMerchant1Activity : AppCompatActivity() {
         nextButton = findViewById(R.id.btn_next)
         previousButton = findViewById(R.id.btn_previous)
 
-        // 2. --- Logique pour le bouton "Next" avec validation ---
+        // Initialisation des nouveaux boutons de navigation croisée (Assumés présents dans le layout)
+        individualButton = findViewById(R.id.btn_individual)
+        associationButton = findViewById(R.id.btn_association)
+        //loginLink = findViewById(R.id.text_login_link)
+
+
+        // --- LOGIQUE DE NAVIGATION CROISÉE (Ajoutée) ---
+
+        // Clic sur le lien 'Login'
+        loginLink.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finishAffinity() // Ferme toutes les activités du flux d'inscription
+        }
+
+        // Clic sur le bouton 'Individual' (Redirige vers le début du flux Individual)
+        individualButton.setOnClickListener {
+            val intent = Intent(this, Activity4::class.java)
+            startActivity(intent)
+            finishAffinity() // Ferme toutes les activités du flux d'inscription
+        }
+
+        // Clic sur le bouton 'Association' (Redirige vers le début du flux Association)
+        associationButton.setOnClickListener {
+            val intent = Intent(this, SignupAssociation1Activity::class.java)
+            startActivity(intent)
+            finishAffinity() // Ferme toutes les activités du flux d'inscription
+        }
+
+
+        // 2. --- Logique pour le bouton "Next" avec validation (Existant) ---
         nextButton.setOnClickListener {
             if (validateInputs()) {
                 val fullName = inputFullName.text.toString().trim()
@@ -47,7 +82,7 @@ class SignupMerchant1Activity : AppCompatActivity() {
             }
         }
 
-        // 3. --- Logique pour le bouton "Previous" ---
+        // 3. --- Logique pour le bouton "Previous" (Existant) ---
         previousButton.setOnClickListener {
             finish()
         }
@@ -61,7 +96,6 @@ class SignupMerchant1Activity : AppCompatActivity() {
 
         val fullName = inputFullName.text.toString().trim()
         val email = inputEmail.text.toString().trim()
-        // Le contact est ici laissé optionnel pour la simplicité, mais la validation pourrait être ajoutée.
 
         // 1. Validation du Nom Complet
         if (fullName.isEmpty()) {
