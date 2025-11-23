@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout // <-- AJOUT NÉCESSAIRE
-import com.google.android.material.navigation.NavigationView // <-- AJOUT NÉCESSAIRE
+// REMPLACEMENT : DrawerLayout et NavigationView ne sont plus nécessaires
+// import androidx.drawerlayout.widget.DrawerLayout
+// import com.google.android.material.navigation.NavigationView
 
 class HomePage : AppCompatActivity() {
 
-    private lateinit var drawerLayout: DrawerLayout
+    // SUPPRESSION : drawerLayout n'est plus utilisé
+    // private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,41 +20,48 @@ class HomePage : AppCompatActivity() {
 
         // Composants du Layout
         val pubTab: LinearLayout = findViewById(R.id.nav_pub_tab)
-        val directLogoutButton = findViewById<ImageButton>(R.id.btn_logout) // Bouton de déconnexion/settings existant
-        val menuButton: ImageButton = findViewById(R.id.btn_menu) // Bouton hamburger pour le tiroir
+        val directLogoutButton = findViewById<ImageButton>(R.id.btn_logout)
+        // SUPPRESSION : Le bouton menu (hamburger) n'est plus utilisé
+        // val menuButton: ImageButton = findViewById(R.id.btn_menu)
 
-        // --- 1. Initialisation du Tiroir ---
-        // L'ID 'drawer_layout' vient de la modification de home_page.xml
-        drawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
+        // NOUVEAU : Référence au nouvel ID du bouton Profil dans la barre inférieure
+        val profileTab: LinearLayout = findViewById(R.id.nav_profile_tab)
 
-        // --- 2. GESTION DU TIROIR ---
-        // Ouvre le tiroir au clic du bouton hamburger
-        menuButton.setOnClickListener {
-            drawerLayout.openDrawer(navView)
-        }
+        // --- 1. SUPPRESSION ET SIMPLIFICATION ---
+        // SUPPRESSION de la gestion du Tiroir
+        // drawerLayout = findViewById(R.id.drawer_layout)
+        // val navView: NavigationView = findViewById(R.id.nav_view)
 
-        // Configuration du listener pour les éléments du menu latéral (Déconnexion)
-        navView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_logout -> { // ID défini dans drawer_menu.xml
-                    performLogout()
-                    drawerLayout.closeDrawers()
-                    true // Indique que l'événement a été géré
-                }
-                // Gérez ici d'autres éléments du menu si nécessaire
-                else -> false
-            }
-        }
+        // SUPPRESSION : L'écouteur du bouton hamburger n'est plus utilisé
+        // menuButton.setOnClickListener {
+        //     drawerLayout.openDrawer(navView)
+        // }
 
-        // --- 3. LOGIQUE DES BOUTONS EXISTANTS ---
-        // Le bouton de déconnexion direct est mis à jour pour utiliser la fonction performLogout()
+        // SUPPRESSION : L'écouteur du menu latéral n'est plus utilisé
+        // navView.setNavigationItemSelectedListener { menuItem ->
+        //    when (menuItem.itemId) {
+        //        R.id.nav_logout -> {
+        //            performLogout()
+        //            drawerLayout.closeDrawers()
+        //            true
+        //        }
+        //        else -> false
+        //    }
+        // }
+
+        // --- 2. LOGIQUE DES BOUTONS EXISTANTS ---
         directLogoutButton.setOnClickListener {
             performLogout()
         }
 
         pubTab.setOnClickListener {
             val intent = Intent(this, MyAnnouncementsActivity::class.java)
+            startActivity(intent)
+        }
+
+        // --- 3. NOUVELLE LOGIQUE : BOUTON PROFIL (Barre inférieure) ---
+        profileTab.setOnClickListener {
+            val intent = Intent(this, ProfilActivity::class.java)
             startActivity(intent)
         }
     }
