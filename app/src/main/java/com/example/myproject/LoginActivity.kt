@@ -2,7 +2,6 @@ package com.example.myproject
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
@@ -13,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.myproject.data.model.UserRole
 import com.example.myproject.data.remote.RetrofitClient
 import com.example.myproject.data.repository.LoginRepository
-// LIGNE CORRIGÉE : L'import doit venir du package 'ui.login'
 import com.example.myproject.data.ui.login.ViewModelFactory
 import com.example.myproject.ui.login.LoginModelView
 
@@ -23,17 +21,22 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var inputPassword: EditText
     private lateinit var loginButton: Button
     private lateinit var signupLink: TextView
-
     private lateinit var loginViewModel: LoginModelView
 
-    // Tag pour le débogage dans Logcat
-    private val TAG = "LoginActivity"
+    private fun decodeJwt(token: String): Boolean {
+        return try {
+            val parts = token.split(".")
+            val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.DEFAULT))
+            payload.contains("\"validated\":true")
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
 
-        // 1. Vérification automatique au démarrage
         if (checkExistingTokenAndNavigate()) return
 
         initViews()
@@ -48,33 +51,21 @@ class LoginActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.button_login)
         signupLink = findViewById(R.id.text_signup_link)
     }
-    private fun navigateToAllowLocation(role: UserRole) {
-        val intent = Intent(this, AllowLocationActivity::class.java).apply {
-            // Passer le rôle pour que AllowLocationActivity sache où rediriger après
-            putExtra("TARGET_ROLE", role.name)
-
-            // Ces flags sont importants pour ne pas revenir à l'écran de Login
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        startActivity(intent)
-        finish() // Fermer LoginActivity
-    }
 
     private fun initViewModel() {
-        val apiService = RetrofitClient.api
-        val loginRepository = LoginRepository(apiService)
-        // ViewModelFactory est maintenant correctement résolu ici
+        val loginRepository = LoginRepository(RetrofitClient.api)
         val factory = ViewModelFactory(loginRepository)
         loginViewModel = ViewModelProvider(this, factory)[LoginModelView::class.java]
     }
 
     private fun setupListeners() {
         loginButton.setOnClickListener {
+            val sharedPref = getSharedPreferences("my_app_prefs", MODE_PRIVATE)
+            sharedPref.edit().clear().apply()
+
             if (validateLoginInputs()) {
                 val email = inputEmail.text.toString().trim()
                 val password = inputPassword.text.toString()
-
-                Log.d(TAG, "Clic Login: Tentative de connexion pour $email")
                 loginViewModel.loginUser(email, password)
             } else {
                 showToast("Veuillez vérifier votre email et mot de passe.")
@@ -87,51 +78,46 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        // Gestion des messages de statut/erreur
         loginViewModel.loginStatus.observe(this) { status ->
-            if (!status.isNullOrEmpty()) {
-                showToast(status)
-                Log.i(TAG, "Status Login: $status")
-            }
+            if (!status.isNullOrEmpty()) showToast(status)
         }
 
-        // Gestion de la réussite de la connexion
-        // C'EST ICI QUE LA NAVIGATION EST DÉCLENCHÉE
         loginViewModel.authResponse.observe(this) { authResponse ->
             authResponse?.let { handleSuccessfulLogin(it) }
         }
 
-        // Gestion de l'état de chargement (désactive les boutons)
         loginViewModel.isLoading.observe(this) { isLoading ->
             updateUIForLoading(isLoading)
         }
     }
 
     private fun handleSuccessfulLogin(authResponse: com.example.myproject.data.model.AuthResponse) {
-        Log.d(TAG, "Login réussi, traitement de la réponse...")
 
-        // On vérifie que le rôle n'est pas null avant de l'utiliser
-        val userRole = authResponse.role
-
-        if (userRole == null) {
-            Log.e(TAG, "ERREUR CRITIQUE: Le rôle est null dans la réponse API.")
+        val userRole = authResponse.role ?: run {
             showToast("Erreur technique : Rôle utilisateur inconnu.")
-            // On reset pour permettre une nouvelle tentative
             loginViewModel.resetLoginStatus()
             return
         }
 
-        // Sauvegarde dans les préférences
+        val validatedFromJwt = decodeJwt(authResponse.token ?: "")
+
+        if (userRole == UserRole.ASSOCIATION || userRole == UserRole.MERCHANT) {
+            if (!validatedFromJwt) {
+                showToast("حسابك مازال يستنى موافقة من المسؤول.")
+                loginViewModel.resetLoginStatus()
+                return
+            }
+        }
+
         val sharedPref = getSharedPreferences("my_app_prefs", MODE_PRIVATE)
         sharedPref.edit().apply {
-            putString("TOKEN", authResponse.token)
-            putString("ROLE", userRole.name) // Utilisation sécurisée de userRole (non-null)
+            putString("TOKEN", authResponse.token ?: "")
+            putString("ROLE", userRole.name)
             putLong("USER_ID", authResponse.id)
-            putString("USERNAME", authResponse.email)
+            putString("USERNAME", authResponse.email ?: "")
             apply()
         }
 
-        Log.d(TAG, "Token sauvegardé. Navigation vers l'écran du rôle: ${userRole.name}")
         navigateBasedOnRole(userRole)
     }
 
@@ -140,15 +126,15 @@ class LoginActivity : AppCompatActivity() {
         val token = sharedPref.getString("TOKEN", "") ?: ""
 
         if (token.isNotEmpty()) {
-            val roleName = sharedPref.getString("ROLE", UserRole.INDIVIDUAL.name) ?: UserRole.INDIVIDUAL.name
-            try {
+            val roleName = sharedPref.getString("ROLE", UserRole.INDIVIDUAL.name)
+                ?: UserRole.INDIVIDUAL.name
+            return try {
                 val role = UserRole.valueOf(roleName)
-                Log.d(TAG, "Token existant trouvé. Redirection auto vers $role")
                 navigateBasedOnRole(role)
-                return true
+                true
             } catch (e: IllegalArgumentException) {
-                Log.w(TAG, "Rôle stocké invalide ($roleName). Nettoyage des préférences.")
                 sharedPref.edit().clear().apply()
+                false
             }
         }
         return false
@@ -156,14 +142,20 @@ class LoginActivity : AppCompatActivity() {
 
     private fun navigateBasedOnRole(role: UserRole) {
         when (role) {
-            UserRole.ADMIN -> navigateToAdminDashboard() // L'Admin navigue toujours directement
-
-            // Tous les autres rôles commencent la navigation par l'écran de localisation
-            UserRole.INDIVIDUAL, UserRole.MERCHANT, UserRole.ASSOCIATION -> navigateToAllowLocation(role)
-
-            // Note: Les anciennes fonctions navigateToHome2() et navigateToHomePage()
-            // ne sont plus appelées ici pour l'écran de Login.
+            UserRole.ADMIN -> navigateToAdminDashboard()
+            UserRole.INDIVIDUAL,
+            UserRole.MERCHANT,
+            UserRole.ASSOCIATION -> navigateToAllowLocation(role)
         }
+    }
+
+    private fun navigateToAllowLocation(role: UserRole) {
+        val intent = Intent(this, AllowLocationActivity::class.java).apply {
+            putExtra("TARGET_ROLE", role.name)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
     }
 
     private fun updateUIForLoading(isLoading: Boolean) {
@@ -195,22 +187,6 @@ class LoginActivity : AppCompatActivity() {
         } else inputPassword.error = null
 
         return isValid
-    }
-
-    // --- Fonctions de Navigation ---
-
-    private fun navigateToHome2() {
-        startActivity(Intent(this, Home2Activity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
-        finish()
-    }
-
-    private fun navigateToHomePage() {
-        startActivity(Intent(this, HomePage::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
-        finish()
     }
 
     private fun navigateToAdminDashboard() {
