@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".TransactionsActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/resource_return"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Retour"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My transactions"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/btn_options"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/points"
+            android:background="@drawable/rounded_yellow_button"
+            android:contentDescription="Options"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="8dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/filter_sort_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/header_layout">
+
+        <TextView
+            android:id="@+id/label_lastest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lastest transactions"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/btn_sort_newest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Newest"
+            android:textSize="14sp"
+            android:textColor="#A0A0A0"
+            android:drawableEnd="@drawable/resource_return"
+            android:drawablePadding="4dp"
+            android:paddingVertical="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_transactions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/filter_sort_layout"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_bar"
+        tools:listitem="@layout/item_transaction"/>
+
+    <LinearLayout
+        android:id="@+id/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/white"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:elevation="8dp"
+        android:weightSum="5"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            style="@style/BottomNavTabInactive"
+            android:id="@+id/nav_home_tab"
+            android:layout_weight="1">
+            <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/home" />
+            <TextView style="@style/BottomNavTextInactive" android:text="Home" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/BottomNavTabInactive"
+            android:id="@+id/nav_explore_tab"
+            android:layout_weight="1">
+            <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/global_search" />
+            <TextView style="@style/BottomNavTextInactive" android:text="Explore" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/BottomNavTabInactive"
+            android:id="@+id/nav_pub_tab"
+            android:layout_weight="1">
+            <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/contour" />
+            <TextView style="@style/BottomNavTextInactive" android:text="Pub" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/BottomNavTabActive"
+            android:id="@+id/nav_offers_tab"
+            android:layout_weight="1">
+            <ImageView style="@style/BottomNavIconActive" android:src="@drawable/notification" />
+            <TextView style="@style/BottomNavTextActive" android:text="Offers" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/BottomNavTabInactive"
+            android:id="@+id/nav_profile_tab"
+            android:layout_weight="1">
+            <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/account" />
+            <TextView style="@style/BottomNavTextInactive" android:text="Profile" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

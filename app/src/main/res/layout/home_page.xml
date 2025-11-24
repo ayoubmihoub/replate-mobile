@@ -81,7 +81,7 @@
                     android:id="@+id/btn_menu"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="@android:color/white"
                     android:src="@drawable/hum"
                     android:padding="8dp"
                     app:cornerRadius="16dp"
@@ -271,12 +271,14 @@
         android:weightSum="5"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout style="@style/BottomNavTabInactive">
+        <LinearLayout style="@style/BottomNavTabInactive" android:id="@+id/nav_home_tab">
             <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/home" />
             <TextView style="@style/BottomNavTextInactive" android:text="Home" />
         </LinearLayout>
 
-        <LinearLayout style="@style/BottomNavTabInactive">
+        <LinearLayout
+            style="@style/BottomNavTabInactive"
+            android:id="@+id/nav_explore_tab">
             <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/global_search" />
             <TextView style="@style/BottomNavTextInactive" android:text="Explore" />
         </LinearLayout>
@@ -286,7 +288,7 @@
             <TextView style="@style/BottomNavTextActive" android:text="pub" />
         </LinearLayout>
 
-        <LinearLayout style="@style/BottomNavTabInactive">
+        <LinearLayout style="@style/BottomNavTabInactive" android:id="@+id/nav_offers_tab">
             <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/notification" />
             <TextView style="@style/BottomNavTextInactive" android:text="Offers" />
         </LinearLayout>

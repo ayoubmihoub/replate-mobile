@@ -11,5 +11,10 @@
     <color name="green_legend">#4CAF50</color>
     <color name="orange_legend">#FF9800</color>
     <color name="red_legend">#F44336</color>
+    <color name="orange_pending">#FFC107</color>
+
+    <color name="green_accepted">#00AA00</color>
+
+    <color name="grey_rejected">#808080</color>
 
 </resources>

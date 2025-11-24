@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:layout_marginHorizontal="16dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <View
+            android:id="@+id/profile_image_placeholder"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#E0E0E0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/label_sent_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Offer Sent By :"
+            android:textSize="12sp"
+            android:textColor="#A0A0A0"
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@id/profile_image_placeholder"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_sender_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Homeless support Bizerte"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toEndOf="@id/profile_image_placeholder"
+            app:layout_constraintTop_toBottomOf="@id/label_sent_by"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_entity_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Local association"
+            android:textSize="12sp"
+            android:textColor="#A0A0A0"
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@id/profile_image_placeholder"
+            app:layout_constraintTop_toBottomOf="@id/tv_sender_name" />
+
+        <View
+            android:id="@+id/spacer_details"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F0F0F0"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintTop_toBottomOf="@id/profile_image_placeholder" />
+
+        <TextView
+            android:id="@+id/label_announcement_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Announcement title :"
+            android:textSize="14sp"
+            android:textColor="#A0A0A0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spacer_details" />
+
+        <TextView
+            android:id="@+id/tv_announcement_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Downtown Bakery"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/label_announcement_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/label_announcement_title" />
+
+        <TextView
+            android:id="@+id/label_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status :"
+            android:textSize="14sp"
+            android:textColor="#A0A0A0"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_announcement_title" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Pending"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#FFC107"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/label_status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/label_status" />
+
+        <TextView
+            android:id="@+id/label_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date :"
+            android:textSize="14sp"
+            android:textColor="#A0A0A0"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_status" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="20 - 12 - 2025"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/label_date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/label_date" />
+
+        <LinearLayout
+            android:id="@+id/layout_action_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/label_date"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <Button
+                android:id="@+id/btn_reject_offer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="❌ Reject Offer"
+                android:backgroundTint="#F5F5F5"
+                android:textColor="#FF4500"
+                android:layout_marginEnd="8dp"
+                app:cornerRadius="8dp"
+                android:minHeight="40dp"
+                android:textSize="14sp"
+                style="?attr/materialButtonOutlinedStyle"/>
+
+            <Button
+                android:id="@+id/btn_accept_offer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="✅ Accept Offer"
+                android:backgroundTint="#E0FFE0"
+                android:textColor="#00AA00"
+                android:layout_marginStart="8dp"
+                app:cornerRadius="8dp"
+                android:minHeight="40dp"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

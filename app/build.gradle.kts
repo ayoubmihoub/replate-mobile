@@ -26,6 +26,9 @@ android {
             )
         }
     }
+    buildFeatures {
+        viewBinding = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -46,6 +49,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.room.common.jvm)
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

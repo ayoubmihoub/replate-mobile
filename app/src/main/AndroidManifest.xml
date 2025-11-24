@@ -48,6 +48,8 @@
         <activity android:name=".FinSignupMerchantActivity" />
         <activity android:name=".FinSignupAssociationActivity" />
         <activity android:name=".ProfilActivity" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".TransactionsActivity" />
 
 
 

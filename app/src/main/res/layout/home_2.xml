@@ -75,10 +75,11 @@
                         android:id="@+id/btn_menu"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:backgroundTint="@color/white"
+                        android:backgroundTint="@android:color/white"
                         android:src="@drawable/hum"
                         android:padding="8dp"
-                        app:cornerRadius="16dp"  app:layout_constraintEnd_toEndOf="parent"
+                        app:cornerRadius="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:scaleType="fitCenter"
                         android:contentDescription="Menu" />
@@ -96,7 +97,7 @@
                         android:id="@+id/input_search"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
-
+                        android:background="@drawable/search"
                         android:hint="Search ..."
                         android:textColorHint="#A9A9A9"
                         android:paddingStart="16dp"
@@ -177,6 +178,7 @@
                         android:orientation="horizontal">
 
                         <Button
+                            android:id="@+id/btn_category_all"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="All types"
@@ -190,6 +192,7 @@
                             app:cornerRadius="20dp" />
 
                         <Button
+                            android:id="@+id/btn_category_baked"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Baked goods"
@@ -224,7 +227,6 @@
                     android:layout_marginBottom="24dp">
 
                     <include layout="@layout/donation_card_free" />
-
                     <include layout="@layout/donation_card_sale" />
 
                 </LinearLayout>
@@ -247,7 +249,6 @@
                     android:paddingEnd="24dp">
 
                     <include layout="@layout/donation_card_nearby" />
-
                     <include layout="@layout/donation_card_nearby_2" />
 
                 </LinearLayout>
@@ -267,27 +268,29 @@
             android:weightSum="5"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <LinearLayout style="@style/BottomNavTabInactive">
+            <LinearLayout style="@style/BottomNavTabInactive" android:id="@+id/nav_home_tab">
                 <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/home" />
                 <TextView style="@style/BottomNavTextInactive" android:text="Home" />
             </LinearLayout>
 
-            <LinearLayout style="@style/BottomNavTabInactive">
+            <LinearLayout style="@style/BottomNavTabInactive" android:id="@+id/nav_explore_tab">
                 <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/global_search" />
                 <TextView style="@style/BottomNavTextInactive" android:text="Explore" />
             </LinearLayout>
+
             <LinearLayout style="@style/BottomNavTabActive" android:id="@+id/nav_pub_tab">
                 <ImageView style="@style/BottomNavIconActive" android:src="@drawable/contour" />
                 <TextView style="@style/BottomNavTextActive" android:text="pub" />
             </LinearLayout>
 
-            <LinearLayout style="@style/BottomNavTabInactive">
+            <LinearLayout style="@style/BottomNavTabInactive" android:id="@+id/nav_offers_tab">
                 <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/notification" />
                 <TextView style="@style/BottomNavTextInactive" android:text="Offers" />
             </LinearLayout>
 
-            <LinearLayout style="@style/BottomNavTabInactive">
-                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/account" />
+            <LinearLayout
+                style="@style/BottomNavTabInactive"
+                android:id="@+id/nav_profile_tab"> <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/account" />
                 <TextView style="@style/BottomNavTextInactive" android:text="Profile" />
             </LinearLayout>
 

@@ -14,41 +14,49 @@
         android:id="@+id/profile_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F5F5F5">
+        android:background="@android:color/white"> <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/header_layout"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/btn_back_profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/resource_return"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Retour"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:background="@android:color/white"
-            app:layout_constraintTop_toTopOf="parent">
+            android:text="Profile"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <ImageButton
-                android:id="@+id/btn_menu_profile"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/hum"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Menu du Profil"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:padding="8dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mon Profil"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/btn_menu_profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/humberger"
+            android:background="@drawable/rounded_yellow_button"
+            android:contentDescription="Menu du Profil"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="8dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -60,48 +68,118 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:gravity="center_horizontal"
+                android:paddingTop="32dp">
+
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/account"
+                    android:background="#E0E0E0" android:contentDescription="Photo de profil"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:id="@+id/profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="John Doe"
+                    android:textSize="22sp"
+                    android:textColor="@android:color/black"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:id="@+id/profile_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="johnDoe@gmail.com"
+                    android:textSize="14sp"
+                    android:textColor="#A0A0A0"
+                    android:layout_marginBottom="40dp"/> <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:baselineAligned="false"
+                android:paddingHorizontal="16dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:gravity="center_horizontal"
-                    android:layout_marginBottom="32dp">
-
-                    <ImageView
-                        android:id="@+id/profile_image"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/account"
-                        android:contentDescription="Photo de profil"
-                        android:layout_marginBottom="16dp"/>
+                    android:gravity="center">
 
                     <TextView
-                        android:id="@+id/profile_name"
+                        android:id="@+id/stat_announcements_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nom et Prénom de l'utilisateur"
-                        android:textSize="22sp"
+                        android:text="13"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@android:color/black"/>
 
                     <TextView
-                        android:id="@+id/profile_role"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rôle"
-                        android:textSize="16sp"
-                        android:textColor="#808080"/>
-
+                        android:text="Announcements"
+                        android:textSize="12sp"
+                        android:textColor="#A0A0A0"
+                        android:gravity="center"
+                        android:maxLines="2"/>
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/btn_edit_profile"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Modifier le Profil"
-                    android:layout_marginTop="20dp"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/stat_offers_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Offers"
+                        android:textSize="12sp"
+                        android:textColor="#A0A0A0"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/stat_completed_offers_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Completed offers"
+                        android:textSize="12sp"
+                        android:textColor="#A0A0A0"
+                        android:gravity="center"
+                        android:maxLines="2"/>
+                </LinearLayout>
+            </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
