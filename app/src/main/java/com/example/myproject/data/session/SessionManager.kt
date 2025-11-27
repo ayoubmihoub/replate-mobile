@@ -4,15 +4,36 @@ package com.example.myproject.data.session
 // par votre logique de stockage réelle après le login.
 object SessionManager {
 
+    // ⭐ NOUVEAU : Variable interne pour le jeton JWT (variable d'état)
+    private var authToken: String? = null
+
     // Simuler un ID utilisateur Marchand (Long)
-    // Le backend utilise Long pour l'ID [cite: package com.replate.offermanagementservice.controller;]
+    // REMPLACER par une gestion dynamique.
     private const val TEST_USER_ID = 1L
-
-    // Simuler le Rôle (doit être "MERCHANT" pour créer des annonces)
     private const val TEST_USER_ROLE = "MERCHANT"
-
-    // Simuler le statut Validé (doit être true pour créer une annonce)
     private const val TEST_IS_VALIDATED = true
+
+    /**
+     * ⭐ NOUVEAU : Sauvegarde le jeton JWT en mémoire pour la durée de la session de l'application.
+     * C'est la méthode que LoginActivity va appeler.
+     */
+    fun saveAuthToken(token: String?) {
+        authToken = token
+    }
+
+    /**
+     * Récupère le jeton JWT. Utilisé par les Repositories (ex: AnnouncementRepository).
+     */
+    fun getAuthToken(): String? {
+        // Retourne le jeton qui a été sauvé par LoginActivity
+        return authToken
+    }
+
+    // ⭐ NOUVEAU : Nettoie l'état du SessionManager (optionnel mais recommandé lors de la déconnexion/reconnexion)
+    fun clearInMemorySession() {
+        authToken = null
+        // Vous pouvez ajouter ici la réinitialisation d'autres champs de session si nécessaire
+    }
 
     /**
      * Récupère l'ID de l'utilisateur.
@@ -20,7 +41,6 @@ object SessionManager {
      */
     fun getUserId(): Long {
         // Force le retour d'un Long non-nullable pour les besoins du test
-        // NOTE: Dans une vraie application, cette fonction pourrait retourner Long?
         return TEST_USER_ID
     }
 
@@ -39,7 +59,4 @@ object SessionManager {
     fun isValidated(): Boolean {
         return TEST_IS_VALIDATED
     }
-
-    // NOTE : Vous auriez aussi besoin d'une fonction pour stocker ces valeurs après /users/login
-    // fun saveSession(userId: Long, role: String, isValidated: Boolean) { ... }
 }

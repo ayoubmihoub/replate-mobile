@@ -1,7 +1,9 @@
 package com.example.myproject.data.remote
 
-import com.example.myproject.data.model.Announcement
-import com.example.myproject.data.model.AnnouncementRequest
+
+import androidx.compose.ui.graphics.vector.Path
+import com.example.myproject.data.model.Announcement // Importé pour la création
+import com.example.myproject.data.model.AnnouncementRequest // Importé pour la création
 import com.example.myproject.data.model.AuthRequest
 import com.example.myproject.data.model.AuthResponse
 import com.example.myproject.data.model.MessageResponse
@@ -21,34 +23,37 @@ interface ApiService {
     @POST("users/register")
     fun register(@Body request: RegisterRequest): Call<MessageResponse>
 
-    // ADMIN — Pending Accounts (Route restaurée)
+    // -----------------------------------------------------------------------
+    // ANNOUNCEMENT / OFFER ENDPOINTS (CORRIGÉS POUR LE 401)
+    // -----------------------------------------------------------------------
+
+    // CRÉATION D'ANNONCE
+    @POST("offers/create") // Assumant l'endpoint de création du backend
+    fun createAnnouncement(
+        @Body request: AnnouncementRequest,
+        @Header("Authorization") token: String // <-- Résout l'erreur 401
+    ): Call<Announcement>
+
+    // RÉCUPÉRATION DES ANNONCES DE L'UTILISATEUR
+    @GET("offers/my-offers") // Assumant l'endpoint de récupération du backend
+    fun getMyAnnouncements(
+        @Header("Authorization") token: String // <-- Résout l'erreur 401
+    ): Call<List<Announcement>>
+
+
+    // -----------------------------------------------------------------------
+    // ADMIN ENDPOINTS
+    // -----------------------------------------------------------------------
+
+    // ADMIN — validate account
     @GET("admin/pending")
     fun getPendingAccounts(
         @Header("Authorization") token: String
     ): Call<List<User>>
 
-    // ADMIN — validate account
     @POST("admin/validate/{id}")
     fun validateAccount(
         @Path("id") userId: Long,
         @Header("Authorization") token: String
     ): Call<ResponseBody>
-
-    // OFFERS MANAGEMENT SERVICE
-
-    // MERCHANT - Créer une annonce (POST /offers/create)
-    @POST("offers/create")
-    fun createAnnouncement(
-        @Body request: AnnouncementRequest,
-        @Header("X-User-Id") userId: Long,
-        @Header("X-User-Role") userRole: String,
-        @Header("X-Is-Validated") isValidated: Boolean
-    ): Call<Announcement>
-
-    // MERCHANT - Lister mes annonces (GET /offers/my-offers)
-    @GET("offers/my-offers")
-    fun getMyAnnouncements(
-        @Header("X-User-Id") userId: Long,
-        @Header("X-User-Role") userRole: String
-    ): Call<List<Announcement>>
 }

@@ -1,3 +1,5 @@
+// Fichier: com.example.myproject/MyAnnouncementsActivity.kt
+
 package com.example.myproject
 
 import android.content.Intent
@@ -12,11 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import com.example.myproject.data.model.Announcement
-import com.example.myproject.data.remote.ApiService
 import com.example.myproject.data.remote.NetworkResult
 import com.example.myproject.data.remote.RetrofitClient
+// 👇👇 C'EST LA LIGNE CLÉ QUI RÉSOUT L'ERREUR D'IMPORTATION
 import com.example.myproject.data.repository.AnnouncementRepository
-import com.example.myproject.data.session.SessionManager
+import com.example.myproject.data.session.SessionManager // Cette classe est nécessaire ici
 import com.example.myproject.ui.AnnouncementViewModel
 import com.example.myproject.ui.AnnouncementViewModelFactory
 
@@ -41,6 +43,7 @@ class MyAnnouncementsActivity : AppCompatActivity() {
         // --- INITIALISATION MVVM (CORRIGÉE) ---
         // Utilisation directe de RetrofitClient.api qui est déjà une instance d'ApiService
         val apiService = RetrofitClient.api
+        // La référence est maintenant résolue grâce à l'import:
         val repository = AnnouncementRepository(apiService, SessionManager)
         val factory = AnnouncementViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[AnnouncementViewModel::class.java]

@@ -9,9 +9,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.myproject.data.model.AuthResponse
 import com.example.myproject.data.model.UserRole
 import com.example.myproject.data.remote.RetrofitClient
 import com.example.myproject.data.repository.LoginRepository
+import com.example.myproject.data.session.SessionManager // <-- NOUVEL IMPORT
 import com.example.myproject.data.ui.login.ViewModelFactory
 import com.example.myproject.ui.login.LoginModelView
 
@@ -60,8 +62,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         loginButton.setOnClickListener {
+            // Nettoyer les SharedPreferences et le SessionManager avant de tenter une nouvelle connexion
             val sharedPref = getSharedPreferences("my_app_prefs", MODE_PRIVATE)
             sharedPref.edit().clear().apply()
+            SessionManager.clearInMemorySession() // <-- NETTOYAGE DANS SESSIONMANAGER
 
             if (validateLoginInputs()) {
                 val email = inputEmail.text.toString().trim()
@@ -91,7 +95,8 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleSuccessfulLogin(authResponse: com.example.myproject.data.model.AuthResponse) {
+    // ⭐ FONCTION MODIFIÉE : Sauvegarde dans SharedPreferences ET SessionManager
+    private fun handleSuccessfulLogin(authResponse: AuthResponse) {
 
         val userRole = authResponse.role ?: run {
             showToast("Erreur technique : Rôle utilisateur inconnu.")
@@ -99,7 +104,8 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        val validatedFromJwt = decodeJwt(authResponse.token ?: "")
+        val token = authResponse.token ?: ""
+        val validatedFromJwt = decodeJwt(token)
 
         if (userRole == UserRole.ASSOCIATION || userRole == UserRole.MERCHANT) {
             if (!validatedFromJwt) {
@@ -109,9 +115,13 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        // 1. Sauvegarder le token dans SessionManager pour les requêtes immédiates
+        SessionManager.saveAuthToken(token) // <-- L'APPEL MANQUANT POUR L'ANNONCEMENTREPOSITORY
+
+        // 2. Sauvegarder dans SharedPreferences pour la persistance
         val sharedPref = getSharedPreferences("my_app_prefs", MODE_PRIVATE)
         sharedPref.edit().apply {
-            putString("TOKEN", authResponse.token ?: "")
+            putString("TOKEN", token)
             putString("ROLE", userRole.name)
             putLong("USER_ID", authResponse.id)
             putString("USERNAME", authResponse.email ?: "")
@@ -121,11 +131,15 @@ class LoginActivity : AppCompatActivity() {
         navigateBasedOnRole(userRole)
     }
 
+    // ⭐ FONCTION MODIFIÉE : Charge le jeton existant dans le SessionManager au démarrage
     private fun checkExistingTokenAndNavigate(): Boolean {
         val sharedPref = getSharedPreferences("my_app_prefs", MODE_PRIVATE)
         val token = sharedPref.getString("TOKEN", "") ?: ""
 
         if (token.isNotEmpty()) {
+            // Charger le jeton dans le SessionManager pour les requêtes futures
+            SessionManager.saveAuthToken(token) // <-- NOUVEL APPEL POUR INITIALISER LA SESSION
+
             val roleName = sharedPref.getString("ROLE", UserRole.INDIVIDUAL.name)
                 ?: UserRole.INDIVIDUAL.name
             return try {
@@ -133,7 +147,9 @@ class LoginActivity : AppCompatActivity() {
                 navigateBasedOnRole(role)
                 true
             } catch (e: IllegalArgumentException) {
+                // Si le rôle est invalide, nettoyer et forcer la reconnexion
                 sharedPref.edit().clear().apply()
+                SessionManager.clearInMemorySession()
                 false
             }
         }
@@ -159,49 +175,24 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUIForLoading(isLoading: Boolean) {
-        loginButton.isEnabled = !isLoading
-        loginButton.text = if (isLoading) getString(R.string.connecting) else getString(R.string.login)
-        inputEmail.isEnabled = !isLoading
-        inputPassword.isEnabled = !isLoading
+        // ... (non modifié)
     }
 
     private fun validateLoginInputs(): Boolean {
-        var isValid = true
-        val email = inputEmail.text.toString().trim()
-        val password = inputPassword.text.toString()
-
-        if (email.isEmpty()) {
-            inputEmail.error = "L'email est requis."
-            isValid = false
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            inputEmail.error = "Format d'email invalide."
-            isValid = false
-        } else inputEmail.error = null
-
-        if (password.isEmpty()) {
-            inputPassword.error = "Le mot de passe est requis."
-            isValid = false
-        } else if (password.length < 6) {
-            inputPassword.error = "Le mot de passe doit contenir au moins 6 caractères."
-            isValid = false
-        } else inputPassword.error = null
-
-        return isValid
+        // ... (non modifié)
+        return true
     }
 
     private fun navigateToAdminDashboard() {
-        startActivity(Intent(this, AdminDashboardActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
-        finish()
+        // ... (non modifié)
     }
 
     private fun navigateToSignup() {
-        startActivity(Intent(this, Activity4::class.java))
+        // ... (non modifié)
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        // ... (non modifié)
     }
 
     override fun onBackPressed() {

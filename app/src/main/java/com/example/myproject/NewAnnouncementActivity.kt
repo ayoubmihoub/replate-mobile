@@ -3,6 +3,7 @@ package com.example.myproject
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context // Ajouté pour SharedPreferences
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,27 +13,23 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.ViewModelProvider
-import com.example.myproject.data.model.AnnouncementRequest
-import com.example.myproject.data.model.AnnouncementType
-import com.example.myproject.data.remote.ApiService
-import com.example.myproject.data.remote.NetworkResult
-import com.example.myproject.data.remote.RetrofitClient
-import com.example.myproject.data.repository.AnnouncementRepository
-import com.example.myproject.data.session.SessionManager
-import com.example.myproject.ui.AnnouncementViewModel
-import com.example.myproject.ui.AnnouncementViewModelFactory
+import com.example.myproject.data.model.Announcement // Importé
+import com.example.myproject.data.model.AnnouncementRequest // Importé
+import com.example.myproject.data.model.AnnouncementType // Importé
+import com.example.myproject.data.remote.RetrofitClient // Importé pour l'appel API
+import retrofit2.Call // Importé
+import retrofit2.Callback // Importé
+import retrofit2.Response // Importé
 import java.text.SimpleDateFormat
 import java.util.*
 
 class NewAnnouncementActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: AnnouncementViewModel
-
-    // Constantes et Vues...
+    // Constantes pour la sélection d'image
     private val PICK_IMAGE_REQUEST = 1
-    private var imageUri: Uri? = null
+    private var imageUri: Uri? = null // URI pour stocker l'image sélectionnée
 
+    // Références de vues
     private lateinit var expirationDateEditText: EditText
     private lateinit var publishButton: Button
     private lateinit var cancelButton: Button
@@ -46,7 +43,7 @@ class NewAnnouncementActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.new_announcement)
 
-        // 1. Initialisation des Vues
+        // 1. Initialisation des Vues (utilisant les IDs ajoutés)
         expirationDateEditText = findViewById(R.id.edit_text_expiration_date)
         publishButton = findViewById(R.id.btn_publish)
         cancelButton = findViewById(R.id.btn_cancel)
@@ -56,86 +53,46 @@ class NewAnnouncementActivity : AppCompatActivity() {
         inputContactNumber = findViewById(R.id.input_contact_number)
         inputPickupAddress = findViewById(R.id.input_pickup_address)
 
-        // --- INITIALISATION MVVM (CORRIGÉE) ---
-        // Utilisation de RetrofitClient.api (instance de ApiService)
-        val apiService = RetrofitClient.api
-        val repository = AnnouncementRepository(apiService, SessionManager)
-        val factory = AnnouncementViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, factory)[AnnouncementViewModel::class.java]
-        // --------------------------------------
-
         // Gérer le bouton Retour
-        findViewById<ImageButton>(R.id.btn_back).setOnClickListener { finish() }
+        findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
+            finish()
+        }
 
-        // Événement pour le bouton "Publish"
+        // 2. GESTION DES ÉVÉNEMENTS
+
+        // Événement pour le sélecteur d'image
+        cardAddPhoto.setOnClickListener {
+            openFileChooser()
+        }
+
+        // Événement pour le sélecteur de date
+        expirationDateEditText.setOnClickListener {
+            showDatePicker()
+        }
+
+        // Événement pour le bouton "Publish" (LOGIQUE MODIFIÉE)
         publishButton.setOnClickListener {
             if (validateFormInputs()) {
-                createAndPublishAnnouncement() // Appel au ViewModel
+                val token = getAuthToken() // 1. Récupérer le token
+                if (token != null) {
+                    publishAnnouncement(token) // 2. Appeler l'API de publication
+                } else {
+                    Toast.makeText(this, "Erreur d'authentification: Jeton manquant. Veuillez vous reconnecter.", Toast.LENGTH_LONG).show()
+                    // Si le jeton est manquant, cela peut arriver si l'utilisateur n'est pas connecté.
+                }
             } else {
                 Toast.makeText(this, "Veuillez remplir tous les champs requis (*).", Toast.LENGTH_LONG).show()
             }
         }
 
-        // ... (autres écouteurs)
-        cardAddPhoto.setOnClickListener { openFileChooser() }
-        expirationDateEditText.setOnClickListener { showDatePicker() }
-        cancelButton.setOnClickListener { finish() }
-
-        // 3. OBSERVATION MVVM
-        observeCreationStatus()
-    }
-
-    // -----------------------------------------------------------------------
-    // LOGIQUE DE PRÉSENTATION (Interagit avec le ViewModel)
-    // -----------------------------------------------------------------------
-
-    private fun createAndPublishAnnouncement() {
-        val title = inputFoodTitle.text.toString().trim()
-        val expiryDate = expirationDateEditText.text.toString().trim()
-        val quantity = inputQuantity.text.toString().trim()
-        val contactNumber = inputContactNumber.text.toString().trim()
-        val pickupAddress = inputPickupAddress.text.toString().trim()
-        val imageUrl = imageUri?.toString()
-
-        val combinedDescription = "Quantité: $quantity, Contact: $contactNumber, Adresse: $pickupAddress"
-
-        val request = AnnouncementRequest(
-            title = title,
-            description = combinedDescription,
-            price = 0.0,
-            announcementType = AnnouncementType.DONATION,
-            imageUrl1 = imageUrl,
-            expiryDate = expiryDate
-        )
-
-        viewModel.createAnnouncement(request)
-    }
-
-    private fun observeCreationStatus() {
-        // Observation du statut de chargement
-        viewModel.isLoading.observe(this) { isLoading ->
-            publishButton.isEnabled = !isLoading
-        }
-
-        // Observation du résultat de l'opération
-        viewModel.creationStatus.observe(this) { result ->
-            result?.let {
-                when (it) {
-                    is NetworkResult.Success -> {
-                        showAnnouncementCreatedDialog()
-                        viewModel.resetCreationStatus()
-                    }
-                    is NetworkResult.Error -> {
-                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                        viewModel.resetCreationStatus()
-                    }
-                }
-            }
+        // Événement pour le bouton "Cancel"
+        cancelButton.setOnClickListener {
+            finish()
         }
     }
 
     // -----------------------------------------------------------------------
-    // LOGIQUE UI (Inchagée)
+    // LOGIQUE DE SÉLECTION D'IMAGE et ACTIVITÉ RESULTAT
     // -----------------------------------------------------------------------
     private fun openFileChooser() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -145,12 +102,69 @@ class NewAnnouncementActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data
             Toast.makeText(this, "Image sélectionnée! URI: $imageUri", Toast.LENGTH_SHORT).show()
         }
     }
 
+    // -----------------------------------------------------------------------
+    // LOGIQUE DE PUBLICATION D'ANNONCE ET GESTION DU TOKEN (NOUVEAU)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Placeholder pour la récupération du jeton JWT.
+     * REMPLACEZ 'auth_prefs' et 'jwt_token' par vos clés réelles.
+     */
+    private fun getAuthToken(): String? {
+        val sharedPreferences = getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+        val tokenFromStorage = sharedPreferences.getString("jwt_token", null)
+
+        // Assurez-vous d'avoir le préfixe "Bearer " pour l'authentification
+        return tokenFromStorage?.let { "Bearer $it" }
+    }
+
+
+    private fun publishAnnouncement(authToken: String) {
+        // NOTE: Puisque le champ 'description' est requis mais manquant dans l'UI,
+        // nous construisons ici une description à partir d'autres champs.
+        val descriptionText = "Type: ${inputFoodTitle.text.toString().trim()}, Quantité: ${inputQuantity.text.toString().trim()}. Adresse: ${inputPickupAddress.text.toString().trim()}"
+
+        val requestBody = AnnouncementRequest(
+            title = inputFoodTitle.text.toString().trim(),
+            description = descriptionText, // Utilisation de la description construite
+            price = 0.0, // Assumons 0.0 pour une donation si c'est le cas par défaut
+            announcementType = AnnouncementType.DONATION, // Assumons le type par défaut
+            imageUrl1 = imageUri?.toString(), // Envoi de l'URI comme URL (à ajuster si un service d'upload est nécessaire)
+            expiryDate = expirationDateEditText.text.toString().trim()
+        )
+
+        RetrofitClient.api.createAnnouncement(requestBody, authToken).enqueue(object : Callback<Announcement> {
+            override fun onResponse(call: Call<Announcement>, response: Response<Announcement>) {
+                if (response.isSuccessful) {
+                    // Succès de la publication
+                    Toast.makeText(this@NewAnnouncementActivity, "Annonce publiée avec succès!", Toast.LENGTH_SHORT).show()
+                    showAnnouncementCreatedDialog()
+                } else if (response.code() == 401) {
+                    // Erreur 401: Non autorisé. Le token est invalide/expiré/manquant.
+                    Toast.makeText(this@NewAnnouncementActivity, "Erreur de publication (401): Jeton non valide. Veuillez vous reconnecter.", Toast.LENGTH_LONG).show()
+                } else {
+                    // Autres erreurs HTTP
+                    Toast.makeText(this@NewAnnouncementActivity, "Erreur de publication: Code ${response.code()}", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Announcement>, t: Throwable) {
+                // Erreur de connexion ou autre échec
+                Toast.makeText(this@NewAnnouncementActivity, "Échec de la connexion au serveur: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    // -----------------------------------------------------------------------
+    // LOGIQUE DE VALIDATION DE FORMULAIRE (Non Modifiée)
+    // -----------------------------------------------------------------------
     private fun validateFormInputs(): Boolean {
         var isValid = true
 
@@ -198,6 +212,9 @@ class NewAnnouncementActivity : AppCompatActivity() {
         return isValid
     }
 
+    // -----------------------------------------------------------------------
+    // Fonctions d'interface (Date Picker et Dialogue - Non Modifiées)
+    // -----------------------------------------------------------------------
     private fun showDatePicker() {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
@@ -216,7 +233,9 @@ class NewAnnouncementActivity : AppCompatActivity() {
     }
 
     private fun showAnnouncementCreatedDialog() {
+        // NOTE: Assurez-vous que le layout R.layout.dialog_announcement_created existe
         val dialogView = layoutInflater.inflate(R.layout.dialog_announcement_created, null)
+
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .setCancelable(false)
@@ -227,11 +246,13 @@ class NewAnnouncementActivity : AppCompatActivity() {
 
         okButton.setOnClickListener {
             dialog.dismiss()
+            // Naviguer vers l'activité des annonces (MyAnnouncementsActivity)
             val intent = Intent(this, MyAnnouncementsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
             finish()
         }
+
         dialog.show()
     }
 }

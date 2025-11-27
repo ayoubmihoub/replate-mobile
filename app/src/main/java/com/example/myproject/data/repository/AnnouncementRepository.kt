@@ -15,8 +15,8 @@ private data class ErrorResponse(val message: String?, val error: String?)
 
 class AnnouncementRepository(
     private val apiService: ApiService,
-    private val sessionManager: SessionManager
-) {
+    private val sessionManager: SessionManager // Contient le jeton
+) { // Début de la classe
 
     // Helper pour extraire un message d'erreur lisible d'un corps de réponse
     private fun extractErrorMessage(errorBodyString: String?, defaultMessage: String): String {
@@ -36,25 +36,31 @@ class AnnouncementRepository(
         }
     }
 
+    // MÉTHODE D'AIDE pour récupérer le token JWT
+    // C'est la présence de cette méthode DANS la classe qui résout l'erreur de référence.
+    private fun getAuthToken(): String? {
+        // Supposons que SessionManager a une méthode pour récupérer le jeton
+        val token = sessionManager.getAuthToken()
+        // Ajout du préfixe "Bearer " pour l'en-tête Authorization
+        return token?.let { "Bearer $it" }
+    }
+
     // -----------------------------------------------------------------------
     // CRÉATION D'ANNONCE
     // -----------------------------------------------------------------------
     suspend fun createAnnouncement(request: AnnouncementRequest): NetworkResult<Announcement> =
         withContext(Dispatchers.IO) {
-            val userId = sessionManager.getUserId()
-            val userRole = sessionManager.getUserRole()
-            val isValidated = sessionManager.isValidated()
+            val authToken = getAuthToken() // Référence maintenant résolue
 
-            if (userId == null || userRole == null) {
-                return@withContext NetworkResult.Error<Announcement>("Session utilisateur invalide. Veuillez vous reconnecter.")
+            if (authToken == null) {
+                return@withContext NetworkResult.Error<Announcement>("Session utilisateur invalide ou jeton manquant. Veuillez vous reconnecter.")
             }
 
             return@withContext try {
+                // Passage de l'authToken à l'ApiService pour l'en-tête Authorization
                 val response = apiService.createAnnouncement(
                     request = request,
-                    userId = userId,
-                    userRole = userRole,
-                    isValidated = isValidated
+                    token = authToken
                 ).execute()
 
                 if (response.isSuccessful) {
@@ -67,7 +73,7 @@ class AnnouncementRepository(
                 } else {
                     val errorBodyString = response.errorBody()?.string()
                     val errorMessage = extractErrorMessage(errorBodyString, "Erreur de publication (Code ${response.code()})")
-                    // Renvoyer l'erreur avec le message extrait
+                    // Le code 401 (Unauthorized) sera traité ici
                     NetworkResult.Error<Announcement>(errorMessage, null)
                 }
             } catch (e: IOException) {
@@ -82,17 +88,16 @@ class AnnouncementRepository(
     // -----------------------------------------------------------------------
     suspend fun getMyAnnouncements(): NetworkResult<List<Announcement>> =
         withContext(Dispatchers.IO) {
-            val userId = sessionManager.getUserId()
-            val userRole = sessionManager.getUserRole()
+            val authToken = getAuthToken() // Référence maintenant résolue
 
-            if (userId == null || userRole == null) {
+            if (authToken == null) {
                 return@withContext NetworkResult.Error<List<Announcement>>("Session utilisateur invalide. Veuillez vous reconnecter.")
             }
 
             return@withContext try {
+                // Passage de l'authToken à l'ApiService pour l'en-tête Authorization
                 val response = apiService.getMyAnnouncements(
-                    userId = userId,
-                    userRole = userRole
+                    token = authToken
                 ).execute()
 
                 if (response.isSuccessful) {
@@ -102,7 +107,7 @@ class AnnouncementRepository(
                 } else {
                     val errorBodyString = response.errorBody()?.string()
                     val errorMessage = extractErrorMessage(errorBodyString, "Erreur de chargement des annonces (Code ${response.code()})")
-                    // Renvoyer l'erreur avec le message extrait
+                    // Le code 401 sera traité ici
                     NetworkResult.Error<List<Announcement>>(errorMessage, null)
                 }
             } catch (e: IOException) {
@@ -111,4 +116,4 @@ class AnnouncementRepository(
                 NetworkResult.Error<List<Announcement>>("Erreur inattendue lors du chargement: ${e.message}", null)
             }
         }
-}
+} // Fin de la classe
