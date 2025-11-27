@@ -10,5 +10,5 @@ sealed class NetworkResult<T>(
 ) {
     class Success<T>(data: T) : NetworkResult<T>(data)
     class Error<T>(message: String, data: T? = null) : NetworkResult<T>(data, message)
-    // On pourrait ajouter Loading<T>(), mais ici on utilise le LiveData _isLoading dans le ViewModel.
+    // L'état de chargement sera géré par un LiveData<Boolean> dans le ViewModel.
 }

@@ -12,16 +12,27 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.ViewModelProvider
+import com.example.myproject.data.model.AnnouncementRequest
+import com.example.myproject.data.model.AnnouncementType
+import com.example.myproject.data.remote.ApiService
+import com.example.myproject.data.remote.NetworkResult
+import com.example.myproject.data.remote.RetrofitClient
+import com.example.myproject.data.repository.AnnouncementRepository
+import com.example.myproject.data.session.SessionManager
+import com.example.myproject.ui.AnnouncementViewModel
+import com.example.myproject.ui.AnnouncementViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
 class NewAnnouncementActivity : AppCompatActivity() {
 
-    // Constantes pour la sélection d'image
-    private val PICK_IMAGE_REQUEST = 1
-    private var imageUri: Uri? = null // URI pour stocker l'image sélectionnée
+    private lateinit var viewModel: AnnouncementViewModel
 
-    // Références de vues
+    // Constantes et Vues...
+    private val PICK_IMAGE_REQUEST = 1
+    private var imageUri: Uri? = null
+
     private lateinit var expirationDateEditText: EditText
     private lateinit var publishButton: Button
     private lateinit var cancelButton: Button
@@ -35,7 +46,7 @@ class NewAnnouncementActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.new_announcement)
 
-        // 1. Initialisation des Vues (utilisant les IDs ajoutés)
+        // 1. Initialisation des Vues
         expirationDateEditText = findViewById(R.id.edit_text_expiration_date)
         publishButton = findViewById(R.id.btn_publish)
         cancelButton = findViewById(R.id.btn_cancel)
@@ -45,41 +56,86 @@ class NewAnnouncementActivity : AppCompatActivity() {
         inputContactNumber = findViewById(R.id.input_contact_number)
         inputPickupAddress = findViewById(R.id.input_pickup_address)
 
+        // --- INITIALISATION MVVM (CORRIGÉE) ---
+        // Utilisation de RetrofitClient.api (instance de ApiService)
+        val apiService = RetrofitClient.api
+        val repository = AnnouncementRepository(apiService, SessionManager)
+        val factory = AnnouncementViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, factory)[AnnouncementViewModel::class.java]
+        // --------------------------------------
+
         // Gérer le bouton Retour
-        findViewById<ImageButton>(R.id.btn_back).setOnClickListener {
-            finish()
-        }
-
-        // 2. GESTION DES ÉVÉNEMENTS
-
-        // Événement pour le sélecteur d'image
-        cardAddPhoto.setOnClickListener {
-            openFileChooser()
-        }
-
-        // Événement pour le sélecteur de date
-        expirationDateEditText.setOnClickListener {
-            showDatePicker()
-        }
+        findViewById<ImageButton>(R.id.btn_back).setOnClickListener { finish() }
 
         // Événement pour le bouton "Publish"
         publishButton.setOnClickListener {
             if (validateFormInputs()) {
-                // Si la validation réussit, on simule l'envoi et affiche le dialogue
-                showAnnouncementCreatedDialog()
+                createAndPublishAnnouncement() // Appel au ViewModel
             } else {
                 Toast.makeText(this, "Veuillez remplir tous les champs requis (*).", Toast.LENGTH_LONG).show()
             }
         }
 
-        // Événement pour le bouton "Cancel"
-        cancelButton.setOnClickListener {
-            finish()
+        // ... (autres écouteurs)
+        cardAddPhoto.setOnClickListener { openFileChooser() }
+        expirationDateEditText.setOnClickListener { showDatePicker() }
+        cancelButton.setOnClickListener { finish() }
+
+        // 3. OBSERVATION MVVM
+        observeCreationStatus()
+    }
+
+    // -----------------------------------------------------------------------
+    // LOGIQUE DE PRÉSENTATION (Interagit avec le ViewModel)
+    // -----------------------------------------------------------------------
+
+    private fun createAndPublishAnnouncement() {
+        val title = inputFoodTitle.text.toString().trim()
+        val expiryDate = expirationDateEditText.text.toString().trim()
+        val quantity = inputQuantity.text.toString().trim()
+        val contactNumber = inputContactNumber.text.toString().trim()
+        val pickupAddress = inputPickupAddress.text.toString().trim()
+        val imageUrl = imageUri?.toString()
+
+        val combinedDescription = "Quantité: $quantity, Contact: $contactNumber, Adresse: $pickupAddress"
+
+        val request = AnnouncementRequest(
+            title = title,
+            description = combinedDescription,
+            price = 0.0,
+            announcementType = AnnouncementType.DONATION,
+            imageUrl1 = imageUrl,
+            expiryDate = expiryDate
+        )
+
+        viewModel.createAnnouncement(request)
+    }
+
+    private fun observeCreationStatus() {
+        // Observation du statut de chargement
+        viewModel.isLoading.observe(this) { isLoading ->
+            publishButton.isEnabled = !isLoading
+        }
+
+        // Observation du résultat de l'opération
+        viewModel.creationStatus.observe(this) { result ->
+            result?.let {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        showAnnouncementCreatedDialog()
+                        viewModel.resetCreationStatus()
+                    }
+                    is NetworkResult.Error -> {
+                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                        viewModel.resetCreationStatus()
+                    }
+                }
+            }
         }
     }
 
     // -----------------------------------------------------------------------
-    // LOGIQUE DE SÉLECTION D'IMAGE
+    // LOGIQUE UI (Inchagée)
     // -----------------------------------------------------------------------
     private fun openFileChooser() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -89,18 +145,12 @@ class NewAnnouncementActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data
-            // Ici, vous pourriez mettre à jour l'image_preview
-            // Exemple : findViewById<ImageView>(R.id.image_preview).setImageURI(imageUri)
             Toast.makeText(this, "Image sélectionnée! URI: $imageUri", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // -----------------------------------------------------------------------
-    // LOGIQUE DE VALIDATION DE FORMULAIRE
-    // -----------------------------------------------------------------------
     private fun validateFormInputs(): Boolean {
         var isValid = true
 
@@ -145,15 +195,9 @@ class NewAnnouncementActivity : AppCompatActivity() {
             inputPickupAddress.error = null
         }
 
-        // L'image n'est pas requise, donc on ne la vérifie pas ici.
-        // if (imageUri == null) { /* code si l'image était obligatoire */ }
-
         return isValid
     }
 
-    // -----------------------------------------------------------------------
-    // Fonctions d'interface (Date Picker et Dialogue)
-    // -----------------------------------------------------------------------
     private fun showDatePicker() {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
@@ -172,9 +216,7 @@ class NewAnnouncementActivity : AppCompatActivity() {
     }
 
     private fun showAnnouncementCreatedDialog() {
-        // NOTE: Assurez-vous que le layout R.layout.dialog_announcement_created existe
         val dialogView = layoutInflater.inflate(R.layout.dialog_announcement_created, null)
-
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .setCancelable(false)
@@ -185,13 +227,11 @@ class NewAnnouncementActivity : AppCompatActivity() {
 
         okButton.setOnClickListener {
             dialog.dismiss()
-            // Simuler la navigation vers l'activité des annonces
             val intent = Intent(this, MyAnnouncementsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
             finish()
         }
-
         dialog.show()
     }
 }

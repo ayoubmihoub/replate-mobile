@@ -6,11 +6,13 @@
         <item name="android:orientation">vertical</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
+
     <style name="BottomNavIconActive">
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">24dp</item>
         <item name="android:tint">#FF4500</item>
     </style>
+
     <style name="BottomNavTextActive">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -21,16 +23,57 @@
 
     <style name="BottomNavTabInactive" parent="BottomNavTabActive">
     </style>
+
     <style name="BottomNavIconInactive" parent="BottomNavIconActive">
         <item name="android:tint">#808080</item>
     </style>
+
     <style name="BottomNavTextInactive" parent="BottomNavTextActive">
         <item name="android:textColor">#808080</item>
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="rounded_profile_bg">
-        <item name="android:background">#E0E0E0</item>
-        <item name="android:radius">8dp</item>
+    <style name="InfoRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="InfoLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#808080</item>
+        <item name="android:minWidth">120dp</item>
+    </style>
+
+    <style name="InfoValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="BottomNavItemStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="BottomNavIconStyle">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:tint">#808080</item>
+    </style>
+
+    <style name="BottomNavTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#808080</item>
     </style>
 </resources>

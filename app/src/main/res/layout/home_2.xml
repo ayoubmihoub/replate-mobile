@@ -28,6 +28,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="16dp">
 
+                <!-- Header avec profil et menu -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -86,6 +87,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <!-- Barre de recherche -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -97,7 +99,6 @@
                         android:id="@+id/input_search"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
-                        android:background="@drawable/search"
                         android:hint="Search ..."
                         android:textColorHint="#A9A9A9"
                         android:paddingStart="16dp"
@@ -121,6 +122,7 @@
                         app:layout_constraintBottom_toBottomOf="@id/input_search" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <!-- Card Saved Food -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -154,6 +156,7 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- Categories -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -204,10 +207,10 @@
                             android:paddingEnd="16dp"
                             android:layout_marginEnd="8dp"
                             app:cornerRadius="20dp" />
-
                     </LinearLayout>
                 </HorizontalScrollView>
 
+                <!-- Available Donations -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -226,11 +229,23 @@
                     android:paddingEnd="24dp"
                     android:layout_marginBottom="24dp">
 
-                    <include layout="@layout/donation_card_free" />
-                    <include layout="@layout/donation_card_sale" />
+                    <FrameLayout
+                        android:id="@+id/donation_card_free"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <include layout="@layout/donation_card_free"/>
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/donation_card_sale"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <include layout="@layout/donation_card_sale"/>
+                    </FrameLayout>
 
                 </LinearLayout>
 
+                <!-- Nearby Donations -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -248,14 +263,26 @@
                     android:paddingStart="24dp"
                     android:paddingEnd="24dp">
 
-                    <include layout="@layout/donation_card_nearby" />
-                    <include layout="@layout/donation_card_nearby_2" />
+                    <FrameLayout
+                        android:id="@+id/donation_card_nearby"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <include layout="@layout/donation_card_nearby"/>
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/donation_card_nearby_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <include layout="@layout/donation_card_nearby_2"/>
+                    </FrameLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
 
+        <!-- Bottom Navigation -->
         <LinearLayout
             android:id="@+id/bottom_navigation_bar"
             android:layout_width="match_parent"
@@ -269,28 +296,29 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout style="@style/BottomNavTabInactive" android:id="@+id/nav_home_tab">
-                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/home" />
+                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/home" android:contentDescription="Home"/>
                 <TextView style="@style/BottomNavTextInactive" android:text="Home" />
             </LinearLayout>
 
             <LinearLayout style="@style/BottomNavTabInactive" android:id="@+id/nav_explore_tab">
-                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/global_search" />
+                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/global_search" android:contentDescription="Explore"/>
                 <TextView style="@style/BottomNavTextInactive" android:text="Explore" />
             </LinearLayout>
 
             <LinearLayout style="@style/BottomNavTabActive" android:id="@+id/nav_pub_tab">
-                <ImageView style="@style/BottomNavIconActive" android:src="@drawable/contour" />
+                <ImageView style="@style/BottomNavIconActive" android:src="@drawable/contour" android:contentDescription="Publish"/>
                 <TextView style="@style/BottomNavTextActive" android:text="pub" />
             </LinearLayout>
 
             <LinearLayout style="@style/BottomNavTabInactive" android:id="@+id/nav_offers_tab">
-                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/notification" />
+                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/notification" android:contentDescription="Offers"/>
                 <TextView style="@style/BottomNavTextInactive" android:text="Offers" />
             </LinearLayout>
 
             <LinearLayout
                 style="@style/BottomNavTabInactive"
-                android:id="@+id/nav_profile_tab"> <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/account" />
+                android:id="@+id/nav_profile_tab">
+                <ImageView style="@style/BottomNavIconInactive" android:src="@drawable/account" android:contentDescription="Profile"/>
                 <TextView style="@style/BottomNavTextInactive" android:text="Profile" />
             </LinearLayout>
 
@@ -298,6 +326,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
